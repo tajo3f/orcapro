@@ -49,7 +49,7 @@ function addItem() {
     
     row.innerHTML = `
         <div class="input-group">
-            <input type="text" class="item-desc" placeholder="Descrição do item ou serviço" required>
+            <input type="text" class="item-desc" placeholder="Ex: Logo, Site, Papelaria (use vírgulas para listar)" required>
         </div>
         <div class="input-group">
             <input type="number" class="item-value" placeholder="R$ 0,00" step="0.01" required oninput="calculateTotal()">
@@ -87,26 +87,25 @@ function formatCurrency(value) {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
-// --- 4. PROCESSAMENTO, SUPABASE E PDF ---
+// --- 4. PROCESSAMENTO, SUPABASE E PDF (LAYOUT FARIAS & SAMPAIO) ---
 document.getElementById('quoteForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
     const btn = document.querySelector('.generate-btn');
     const originalText = btn.innerHTML;
     
-    // Feedback visual de carregamento
-    btn.innerHTML = '<i data-lucide="loader"></i> Salvando e Gerando...';
+    btn.innerHTML = '<i data-lucide="loader"></i> Sincronizando e Gerando...';
     btn.disabled = true;
     lucide.createIcons();
     
-    // Captura de dados dos campos
+    // Captura de dados
     const companyName = document.getElementById('myCompany').value || 'Minha Empresa';
     const clientName = document.getElementById('clientName').value;
     const quoteNumber = document.getElementById('quoteNumber').value;
     const validDate = document.getElementById('validDate').value;
     const obs = document.getElementById('obsText').value;
     
-    // Preparar campos do PDF (Cabeçalho/Rodapé)
+    // Injeção de Dados no Template do PDF
     document.getElementById('pdf-my-company').innerText = companyName;
     document.getElementById('pdf-my-doc').innerText = document.getElementById('myDoc').value;
     document.getElementById('pdf-my-phone').innerText = document.getElementById('myPhone').value;
@@ -117,7 +116,7 @@ document.getElementById('quoteForm').addEventListener('submit', async function(e
     const dateParts = validDate.split('-');
     document.getElementById('pdf-date').innerText = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
     
-    // Processar Itens (Tabela do PDF + Array para Banco)
+    // Processar Itens para Tabela Estilizada
     const tbody = document.getElementById('pdf-items-body');
     tbody.innerHTML = ''; 
     const descriptions = document.querySelectorAll('.item-desc');
@@ -125,35 +124,41 @@ document.getElementById('quoteForm').addEventListener('submit', async function(e
     let itensArray = [];
     
     for(let i = 0; i < descriptions.length; i++) {
-        const desc = descriptions[i].value;
+        const descOriginal = descriptions[i].value;
         const val = parseFloat(values[i].value || 0);
         
+        // LÓGICA DE FORMATAÇÃO: Transforma vírgulas em lista com bullets (conforme imagem)
+        const descFormatada = descOriginal.includes(',') 
+            ? descOriginal.split(',').map(item => `• ${item.trim()}`).join('<br>')
+            : descOriginal;
+        
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td><strong>${desc}</strong></td><td class="text-right">${formatCurrency(val)}</td>`;
+        tr.innerHTML = `
+            <td style="width: 30%"><strong>Item 0${i+1}</strong></td>
+            <td style="width: 50%">${descFormatada}</td>
+            <td class="text-right" style="width: 20%"><strong>${formatCurrency(val)}</strong></td>
+        `;
         tbody.appendChild(tr);
         
-        itensArray.push({ descrição: desc, valor: val });
+        itensArray.push({ descrição: descOriginal, valor: val });
     }
     
     const totalFinal = calculateTotal();
     document.getElementById('pdf-grand-total').innerText = formatCurrency(totalFinal);
-    document.getElementById('pdf-obs-text').innerText = obs || 'Sem observações adicionais.';
+    document.getElementById('pdf-obs-text').innerText = obs || 'Válido por 30 dias.';
 
-    // --- LOGICA SUPABASE ---
+    // --- SINCRONIZAÇÃO SUPABASE ---
     try {
-        const { error } = await supabaseClient.from('propostas').insert([{
+        await supabaseClient.from('propostas').insert([{
             empresa_emissora: companyName,
             cliente: clientName,
             numero_orcamento: quoteNumber,
             data_validade: validDate,
             valor_total: totalFinal,
-            itens: itensArray // O SDK do Supabase já converte arrays/objetos para JSONB automaticamente
+            itens: itensArray
         }]);
-
-        if (error) console.error("Erro Supabase:", error);
-        else console.log("Dados sincronizados com sucesso!");
     } catch (err) {
-        console.error("Erro crítico de conexão:", err);
+        console.error("Erro ao salvar no banco:", err);
     }
 
     // --- GERAÇÃO DO PDF ---
@@ -166,7 +171,7 @@ function generatePDF(clientName, btnElement, originalText) {
     
     const opt = {
         margin: [0, 0],
-        filename: `Proposta_${clientName.replace(/\s+/g, '_')}.pdf`,
+        filename: `Orcamento_${clientName.replace(/\s+/g, '_')}.pdf`,
         image: { type: 'jpeg', quality: 1 },
         html2canvas: { scale: 3, useCORS: true, letterRendering: true },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
@@ -177,8 +182,5 @@ function generatePDF(clientName, btnElement, originalText) {
         btnElement.innerHTML = originalText;
         btnElement.disabled = false;
         lucide.createIcons();
-    }).catch(err => {
-        console.error("Erro ao gerar PDF:", err);
-        btnElement.disabled = false;
     });
 }
