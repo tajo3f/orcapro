@@ -60,25 +60,105 @@ input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px
 
 .divider { height: 1px; background: var(--border); margin: 30px 0; }
 
-/* =========================================
-   TEMPLATE DO PDF (Invisível na tela, perfeito na impressão)
-========================================= */
-.pdf-container { display: none; width: 800px; padding: 60px; background: white; color: #0f172a; }
-.pdf-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 40px; }
-.pdf-header .brand { font-size: 28px; font-weight: 800; color: #1e293b; margin-bottom: 5px; }
-.text-right { text-align: right; }
-.pdf-section { margin-bottom: 30px; }
-.pdf-section h3 { font-size: 12px; text-transform: uppercase; color: #64748b; letter-spacing: 1px; margin-bottom: 5px; }
-.pdf-section .highlight { font-size: 20px; font-weight: 700; color: #0f172a; }
-.pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
-.pdf-table th { text-align: left; padding: 15px; background: #f8fafc; color: #475569; font-size: 13px; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; }
-.pdf-table th.text-right { text-align: right; }
-.pdf-table td { padding: 20px 15px; border-bottom: 1px solid #f1f5f9; font-size: 15px; }
-.pdf-total-section { display: flex; justify-content: flex-end; margin-bottom: 40px; }
-.pdf-total-box { background: #f8fafc; padding: 20px 40px; border-radius: 8px; border: 1px solid #e2e8f0; text-align: right; }
-.pdf-total-box p { font-size: 13px; color: #64748b; font-weight: 600; margin-bottom: 5px; }
-.pdf-total-box h2 { font-size: 24px; color: #2563eb; }
-.pdf-obs { background: #f8fafc; padding: 20px; border-left: 4px solid #2563eb; border-radius: 4px; margin-bottom: 40px; }
-.pdf-obs h3 { font-size: 14px; margin-bottom: 8px; color: #0f172a; }
-.pdf-obs p { font-size: 13px; color: #475569; line-height: 1.6; }
-.pdf-footer { border-top: 1px solid #e2e8f0; padding-top: 20px; text-align: center; font-size: 12px; color: #94a3b8; }
+/* DESIGN PDF INSPIRADO NA IMAGEM */
+.pdf-container {
+    width: 210mm; /* Tamanho A4 exato */
+    min-height: 297mm;
+    padding: 20mm;
+    position: relative;
+    background: white;
+    color: #333;
+}
+
+.pdf-shapes-top {
+    position: absolute;
+    top: 0; right: 0;
+    width: 150px; height: 100px;
+    background: linear-gradient(225deg, #0033bb 0%, #0033bb 50%, transparent 50%);
+}
+
+.pdf-shapes-bottom {
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 200px; height: 150px;
+    background: linear-gradient(45deg, #0033bb 0%, #0033bb 40%, #0066ff 40%, #0066ff 50%, transparent 50%);
+}
+
+.company-name-pdf {
+    color: #0033bb;
+    font-size: 24px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+}
+
+.title-blue {
+    color: #0033bb;
+    font-size: 28px;
+    font-weight: 800;
+    margin-top: 20px;
+}
+
+.pdf-header-new {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 50px;
+}
+
+.header-right {
+    text-align: right;
+    font-size: 13px;
+    color: #444;
+    line-height: 1.8;
+}
+
+.pdf-client-section { margin-bottom: 40px; }
+.pdf-client-section h3 { color: #0033bb; font-size: 16px; margin-bottom: 5px; }
+.client-highlight { font-size: 18px; font-weight: 600; }
+
+.pdf-table-new { width: 100%; border-collapse: collapse; margin-top: 20px; }
+.pdf-table-new th {
+    color: #0033bb;
+    border-bottom: 3px solid #0033bb;
+    padding: 10px;
+    text-align: left;
+    font-weight: 800;
+}
+
+.pdf-table-new td {
+    padding: 15px 10px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    vertical-align: top;
+}
+
+.pdf-total-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.total-label {
+    background: #0033bb;
+    color: white;
+    padding: 10px 30px;
+    font-weight: 800;
+    font-size: 20px;
+}
+
+.pdf-footer-info {
+    margin-top: 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+
+.pdf-footer-info h4 {
+    color: #0033bb;
+    font-size: 14px;
+    border-bottom: 2px solid #0033bb;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.pdf-footer-info p { font-size: 12px; color: #555; }
