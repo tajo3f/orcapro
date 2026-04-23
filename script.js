@@ -1,36 +1,47 @@
+// --- 1. CONFIGURAÇÃO SUPABASE ---
+const SUPABASE_URL = 'https://cynponjiqcszrzysuvlb.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_mWEIC5vvFYq8FFNf1QAnTA_u-Ix0xBx'; 
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 document.addEventListener('DOMContentLoaded', () => {
     loadCompanyData();
     addItem(); // Adiciona o primeiro item em branco ao carregar
+    lucide.createIcons();
 });
 
-// --- 1. MEMÓRIA DA EMPRESA (LocalStorage) ---
-// Salva os dados do cabeçalho enquanto o usuário digita
+// --- 2. MEMÓRIA DA EMPRESA (LocalStorage) ---
 const companyInputs = ['myCompany', 'myPhone', 'myEmail', 'myDoc'];
 companyInputs.forEach(id => {
-    document.getElementById(id).addEventListener('input', (e) => {
-        localStorage.setItem(`orcapro_${id}`, e.target.value);
-    });
+    const el = document.getElementById(id);
+    if (el) {
+        el.addEventListener('input', (e) => {
+            localStorage.setItem(`orcapro_${id}`, e.target.value);
+        });
+    }
 });
 
 function loadCompanyData() {
     companyInputs.forEach(id => {
         const saved = localStorage.getItem(`orcapro_${id}`);
-        if (saved) document.getElementById(id).value = saved;
+        const el = document.getElementById(id);
+        if (saved && el) el.value = saved;
     });
     
-    // Auto-preenche a data de validade para 7 dias no futuro
     const dateInput = document.getElementById('validDate');
-    const futureDate = new Date();
-    futureDate.setDate(futureDate.getDate() + 7);
-    dateInput.value = futureDate.toISOString().split('T')[0];
+    if (dateInput) {
+        const futureDate = new Date();
+        futureDate.setDate(futureDate.getDate() + 7);
+        dateInput.value = futureDate.toISOString().split('T')[0];
+    }
 }
 
-// --- 2. SISTEMA DE ITENS DINÂMICOS ---
+// --- 3. SISTEMA DE ITENS DINÂMICOS ---
 let itemCount = 0;
 
 function addItem() {
     itemCount++;
     const container = document.getElementById('itemsContainer');
+    if (!container) return;
     
     const row = document.createElement('div');
     row.className = 'item-row';
@@ -54,8 +65,10 @@ function addItem() {
 
 function removeItem(id) {
     const row = document.getElementById(`itemRow_${id}`);
-    row.remove();
-    calculateTotal();
+    if (row) {
+        row.remove();
+        calculateTotal();
+    }
 }
 
 function calculateTotal() {
@@ -65,7 +78,8 @@ function calculateTotal() {
         if(input.value) total += parseFloat(input.value);
     });
     
-    document.getElementById('grandTotal').innerText = formatCurrency(total);
+    const display = document.getElementById('grandTotal');
+    if (display) display.innerText = formatCurrency(total);
     return total;
 }
 
@@ -73,68 +87,98 @@ function formatCurrency(value) {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
-// --- 3. GERAÇÃO DE PDF PROFISSIONAL ---
-document.getElementById('quoteForm').addEventListener('submit', function(e) {
+// --- 4. PROCESSAMENTO, SUPABASE E PDF ---
+document.getElementById('quoteForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
-    // Preparar dados da empresa (Emissor)
-    document.getElementById('pdf-my-company').innerText = document.getElementById('myCompany').value || 'Minha Empresa';
+    const btn = document.querySelector('.generate-btn');
+    const originalText = btn.innerHTML;
+    
+    // Feedback visual de carregamento
+    btn.innerHTML = '<i data-lucide="loader"></i> Salvando e Gerando...';
+    btn.disabled = true;
+    lucide.createIcons();
+    
+    // Captura de dados dos campos
+    const companyName = document.getElementById('myCompany').value || 'Minha Empresa';
+    const clientName = document.getElementById('clientName').value;
+    const quoteNumber = document.getElementById('quoteNumber').value;
+    const validDate = document.getElementById('validDate').value;
+    const obs = document.getElementById('obsText').value;
+    
+    // Preparar campos do PDF (Cabeçalho/Rodapé)
+    document.getElementById('pdf-my-company').innerText = companyName;
     document.getElementById('pdf-my-doc').innerText = document.getElementById('myDoc').value;
     document.getElementById('pdf-my-phone').innerText = document.getElementById('myPhone').value;
     document.getElementById('pdf-my-email').innerText = document.getElementById('myEmail').value;
+    document.getElementById('pdf-client-name').innerText = clientName;
+    document.getElementById('pdf-number').innerText = quoteNumber;
     
-    // Preparar dados do cliente e gerais
-    document.getElementById('pdf-client-name').innerText = document.getElementById('clientName').value;
-    document.getElementById('pdf-number').innerText = document.getElementById('quoteNumber').value;
-    
-    // Formatar Data
-    const dateParts = document.getElementById('validDate').value.split('-');
+    const dateParts = validDate.split('-');
     document.getElementById('pdf-date').innerText = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
     
-    // Injetar Itens na Tabela do PDF
+    // Processar Itens (Tabela do PDF + Array para Banco)
     const tbody = document.getElementById('pdf-items-body');
-    tbody.innerHTML = ''; // Limpa tabela
-    
+    tbody.innerHTML = ''; 
     const descriptions = document.querySelectorAll('.item-desc');
     const values = document.querySelectorAll('.item-value');
+    let itensArray = [];
     
     for(let i = 0; i < descriptions.length; i++) {
-        const tr = document.createElement('tr');
+        const desc = descriptions[i].value;
         const val = parseFloat(values[i].value || 0);
         
-        tr.innerHTML = `
-            <td><strong>${descriptions[i].value}</strong></td>
-            <td class="text-right">${formatCurrency(val)}</td>
-        `;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td><strong>${desc}</strong></td><td class="text-right">${formatCurrency(val)}</td>`;
         tbody.appendChild(tr);
+        
+        itensArray.push({ descrição: desc, valor: val });
     }
     
-    // Total e Observações
-    document.getElementById('pdf-grand-total').innerText = document.getElementById('grandTotal').innerText;
-    document.getElementById('pdf-obs-text').innerText = document.getElementById('obsText').value || 'Sem observações adicionais.';
+    const totalFinal = calculateTotal();
+    document.getElementById('pdf-grand-total').innerText = formatCurrency(totalFinal);
+    document.getElementById('pdf-obs-text').innerText = obs || 'Sem observações adicionais.';
 
-    // Disparar PDF
-    generatePDF(document.getElementById('clientName').value);
+    // --- LOGICA SUPABASE ---
+    try {
+        const { error } = await supabaseClient.from('propostas').insert([{
+            empresa_emissora: companyName,
+            cliente: clientName,
+            numero_orcamento: quoteNumber,
+            data_validade: validDate,
+            valor_total: totalFinal,
+            itens: itensArray // O SDK do Supabase já converte arrays/objetos para JSONB automaticamente
+        }]);
+
+        if (error) console.error("Erro Supabase:", error);
+        else console.log("Dados sincronizados com sucesso!");
+    } catch (err) {
+        console.error("Erro crítico de conexão:", err);
+    }
+
+    // --- GERAÇÃO DO PDF ---
+    generatePDF(clientName, btn, originalText);
 });
 
-function generatePDF(clientName) {
+function generatePDF(clientName, btnElement, originalText) {
     const element = document.getElementById('pdf-template');
-    const btn = document.querySelector('.generate-btn');
-    
-    btn.innerText = "Gerando Documento...";
-    element.style.display = 'block'; // Mostra pro script ler
+    element.style.display = 'block'; 
     
     const opt = {
         margin: [0, 0],
         filename: `Proposta_${clientName.replace(/\s+/g, '_')}.pdf`,
         image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 3, useCORS: true }, // Scale 3 garante altíssima resolução
+        html2canvas: { scale: 3, useCORS: true, letterRendering: true },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
     html2pdf().set(opt).from(element).save().then(() => {
-        element.style.display = 'none'; // Esconde novamente
-        btn.innerHTML = '<i data-lucide="file-down"></i> Gerar e Baixar PDF Profissional';
+        element.style.display = 'none'; 
+        btnElement.innerHTML = originalText;
+        btnElement.disabled = false;
         lucide.createIcons();
+    }).catch(err => {
+        console.error("Erro ao gerar PDF:", err);
+        btnElement.disabled = false;
     });
 }
