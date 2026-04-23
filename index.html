@@ -1,134 +1,212 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OrçaPro | Gerador Profissional</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script> 
-    
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>OrçaPro | Gerador Profissional</title>
+<meta name="description" content="Sistema profissional para gerar propostas comerciais em PDF.">
+
+<link rel="stylesheet" href="style.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- html2pdf -->
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<!-- Supabase -->
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Lucide -->
+<script defer src="https://unpkg.com/lucide@latest"></script>
+
+<!-- Seu JS -->
+<script defer src="script.js"></script>
 </head>
+
 <body>
 
-    <div class="app-container">
-        <header class="app-header">
-            <div class="logo">Orça<span>Pro</span></div>
-            <p>Gerador de Propostas Comerciais</p>
-        </header>
+<div class="app-container">
 
-        <main class="dashboard-grid">
-            
-            <section class="panel">
-                <div class="panel-header">
-                    <i data-lucide="building"></i>
-                    <h2>Sua Empresa (Cabeçalho)</h2>
-                </div>
-                <p class="hint">Estes dados aparecerão no cabeçalho e rodapé do PDF. (Salvos automaticamente)</p>
-                
-                <form id="companyForm" class="form-grid">
-                    <div class="input-group full">
-                        <label>Nome da sua Empresa</label>
-                        <input type="text" id="myCompany" placeholder="Ex: Agência XYZ" required>
-                    </div>
-                    <div class="input-group">
-                        <label>Telefone / WhatsApp</label>
-                        <input type="text" id="myPhone" placeholder="(00) 00000-0000">
-                    </div>
-                    <div class="input-group">
-                        <label>E-mail Corporativo</label>
-                        <input type="email" id="myEmail" placeholder="contato@suaempresa.com">
-                    </div>
-                    <div class="input-group full">
-                        <label>Endereço ou CNPJ (Opcional)</label>
-                        <input type="text" id="myDoc" placeholder="CNPJ: 00.000.000/0001-00">
-                    </div>
-                </form>
-            </section>
-
-            <section class="panel">
-                <div class="panel-header">
-                    <i data-lucide="user"></i>
-                    <h2>Dados do Cliente & Serviço</h2>
-                </div>
-                
-                <form id="quoteForm">
-                    <div class="form-grid">
-                        <div class="input-group full">
-                            <label>Nome do Cliente ou Empresa</label>
-                            <input type="text" id="clientName" placeholder="Para quem é este orçamento?" required>
-                        </div>
-                        <div class="input-group">
-                            <label>Data de Validade</label>
-                            <input type="date" id="validDate" required>
-                        </div>
-                        <div class="input-group">
-                            <label>Número do Orçamento</label>
-                            <input type="text" id="quoteNumber" value="001" required>
-                        </div>
-                    </div>
-
-                    <div class="divider"></div>
-
-                    <div class="panel-header">
-                        <i data-lucide="list"></i>
-                        <h2>Itens do Orçamento</h2>
-                    </div>
-                    
-                    <div id="itemsContainer">
-                        </div>
-
-                    <button type="button" class="btn btn-secondary" onclick="addItem()">
-                        <i data-lucide="plus-circle"></i> Adicionar Novo Item
-                    </button>
-
-                    <div class="total-box">
-                        <span>Valor Total da Proposta:</span>
-                        <h2 id="grandTotal">R$ 0,00</h2>
-                    </div>
-
-                    <div class="input-group full" style="margin-top: 20px;">
-                        <label>Observações / Condições de Pagamento</label>
-                        <textarea id="obsText" rows="3" placeholder="Ex: Pagamento 50% no início e 50% na entrega. Validade de 15 dias."></textarea>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary generate-btn">
-                        <i data-lucide="file-down"></i> Gerar e Baixar PDF Profissional
-                    </button>
-                </form>
-            </section>
-        </main>
-    </div>
-
-<div id="pdf-template" class="pdf-container">
-    <div class="pdf-shapes-top"></div>
-    
-    <header class="pdf-header-new">
-        <div class="header-left">
-            <h1 id="pdf-my-company" class="company-name-pdf">NOME DA EMPRESA</h1>
-            <div class="quote-info">
-                <h2 class="title-blue">ORÇAMENTO #<span id="pdf-number"></span></h2>
-                <p><strong>Data:</strong> <span id="pdf-date"></span></p>
-            </div>
-        </div>
-        <div class="header-right">
-            <p><span id="pdf-my-phone"></span> <i data-lucide="phone"></i></p>
-            <p><span id="pdf-my-email"></span> <i data-lucide="mail"></i></p>
-            <p id="pdf-my-doc"></p>
-        </div>
+    <!-- HEADER -->
+    <header class="app-header">
+        <div class="logo">Orça<span>Pro</span></div>
+        <p>Gerador Profissional de Propostas Comerciais</p>
     </header>
 
-    <div class="pdf-client-section">
-        <h3>A/C:</h3>
-        <p class="client-highlight" id="pdf-client-name"></p>
-        <p id="pdf-client-details">Responsável pelo Orçamento</p>
-    </div>
+    <!-- GRID -->
+    <main class="dashboard-grid">
 
+        <!-- EMPRESA -->
+        <section class="panel">
+
+            <div class="panel-header">
+                <i data-lucide="building-2"></i>
+                <h2>Sua Empresa</h2>
+            </div>
+
+            <p class="hint">
+                Estes dados aparecem automaticamente no PDF e ficam salvos no navegador.
+            </p>
+
+            <form id="companyForm" class="form-grid">
+
+                <div class="input-group full">
+                    <label for="myCompany">Nome da Empresa</label>
+                    <input type="text" id="myCompany" placeholder="Ex: Agência Alpha" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="myPhone">WhatsApp</label>
+                    <input type="text" id="myPhone" placeholder="(27) 99999-9999">
+                </div>
+
+                <div class="input-group">
+                    <label for="myEmail">E-mail</label>
+                    <input type="email" id="myEmail" placeholder="contato@empresa.com">
+                </div>
+
+                <div class="input-group full">
+                    <label for="myDoc">CNPJ / Endereço</label>
+                    <input type="text" id="myDoc" placeholder="CNPJ: 00.000.000/0001-00">
+                </div>
+
+            </form>
+
+        </section>
+
+        <!-- ORÇAMENTO -->
+        <section class="panel">
+
+            <div class="panel-header">
+                <i data-lucide="briefcase-business"></i>
+                <h2>Orçamento</h2>
+            </div>
+
+            <form id="quoteForm">
+
+                <div class="form-grid">
+
+                    <div class="input-group full">
+                        <label for="clientName">Cliente / Empresa</label>
+                        <input type="text" id="clientName" placeholder="Nome do cliente" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="validDate">Data de Validade</label>
+                        <input type="date" id="validDate" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="quoteNumber">Número</label>
+                        <input type="text" id="quoteNumber" value="001" required>
+                    </div>
+
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- ITENS -->
+                <div class="panel-header">
+                    <i data-lucide="list-checks"></i>
+                    <h2>Itens da Proposta</h2>
+                </div>
+
+                <div id="itemsContainer"></div>
+
+                <button type="button" class="btn btn-secondary" onclick="addItem()">
+                    <i data-lucide="plus-circle"></i>
+                    Adicionar Novo Item
+                </button>
+
+                <!-- TOTAL -->
+                <div class="total-box">
+                    <span>Total da Proposta</span>
+                    <h2 id="grandTotal">R$ 0,00</h2>
+                </div>
+
+                <!-- OBS -->
+                <div class="input-group full" style="margin-top:20px;">
+                    <label for="obsText">Observações / Condições</label>
+                    <textarea id="obsText" rows="4" placeholder="Ex: 50% entrada e 50% entrega."></textarea>
+                </div>
+
+                <!-- GERAR -->
+                <button type="submit" class="btn btn-primary generate-btn">
+                    <i data-lucide="file-down"></i>
+                    Gerar PDF Profissional
+                </button>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+<!-- ========================================================= -->
+<!-- TEMPLATE PDF (NÃO APARECE NO SITE) -->
+<!-- ========================================================= -->
+
+<div id="pdf-template" class="pdf-container" style="display:none;">
+
+    <!-- detalhes -->
+    <div class="pdf-shapes-top"></div>
+
+    <!-- topo -->
+    <header class="pdf-header-new">
+
+        <div class="header-left">
+
+            <h1 id="pdf-my-company" class="company-name-pdf">
+                NOME DA EMPRESA
+            </h1>
+
+            <div class="quote-info">
+                <h2 class="title-blue">
+                    ORÇAMENTO #<span id="pdf-number"></span>
+                </h2>
+
+                <p>
+                    <strong>Validade:</strong>
+                    <span id="pdf-date"></span>
+                </p>
+            </div>
+
+        </div>
+
+        <div class="header-right">
+
+            <p id="pdf-my-phone"></p>
+            <p id="pdf-my-email"></p>
+            <p id="pdf-my-doc"></p>
+
+        </div>
+
+    </header>
+
+    <!-- cliente -->
+    <section class="pdf-client-section">
+
+        <h3>Proposta para:</h3>
+
+        <p class="client-highlight" id="pdf-client-name">
+            Cliente
+        </p>
+
+        <p id="pdf-client-details">
+            Documento gerado profissionalmente via OrçaPro.
+        </p>
+
+    </section>
+
+    <!-- tabela -->
     <table class="pdf-table-new">
+
         <thead>
             <tr>
                 <th>SERVIÇO</th>
@@ -136,65 +214,44 @@
                 <th class="text-right">VALOR</th>
             </tr>
         </thead>
-        <tbody id="pdf-items-body">
-            </tbody>
+
+        <tbody id="pdf-items-body"></tbody>
+
     </table>
 
+    <!-- total -->
     <div class="pdf-total-row">
-        <div class="total-label">TOTAL: <span id="pdf-grand-total"></span></div>
+        <div class="total-label">
+            TOTAL: <span id="pdf-grand-total"></span>
+        </div>
     </div>
 
-    <div class="pdf-footer-info">
+    <!-- rodapé -->
+    <section class="pdf-footer-info">
+
         <div class="footer-block">
             <h4>FORMA DE PAGAMENTO</h4>
-            <p id="pdf-payment-info">Pix, Transferência ou Cartão de Crédito.</p>
+            <p>
+                Pix, transferência bancária ou cartão.
+            </p>
         </div>
+
         <div class="footer-block">
             <h4>TERMOS E CONDIÇÕES</h4>
             <p id="pdf-obs-text"></p>
         </div>
-    </div>
+
+    </section>
 
     <div class="pdf-shapes-bottom"></div>
+
 </div>
-    
-        </header>
 
-        <div class="pdf-section">
-            <h3>Preparado para:</h3>
-            <p class="highlight" id="pdf-client-name"></p>
-        </div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.lucide) lucide.createIcons();
+});
+</script>
 
-        <table class="pdf-table">
-            <thead>
-                <tr>
-                    <th>Descrição do Item/Serviço</th>
-                    <th class="text-right">Valor</th>
-                </tr>
-            </thead>
-            <tbody id="pdf-items-body">
-                </tbody>
-        </table>
-
-        <div class="pdf-total-section">
-            <div class="pdf-total-box">
-                <p>TOTAL DA PROPOSTA</p>
-                <h2 id="pdf-grand-total"></h2>
-            </div>
-        </div>
-
-        <div class="pdf-obs">
-            <h3>Termos e Condições</h3>
-            <p id="pdf-obs-text"></p>
-        </div>
-
-        <footer class="pdf-footer">
-            <p><span id="pdf-my-phone"></span> | <span id="pdf-my-email"></span></p>
-            <p>Documento gerado profissionalmente.</p>
-        </footer>
-    </div>
-
-    <script src="script.js"></script>
-    <script>lucide.createIcons();</script>
 </body>
 </html>
