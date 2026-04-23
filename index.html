@@ -259,10 +259,11 @@
     </div>
 
     <script>
-        // --- CONFIGURAÇÃO SUPABASE ---
-        const SUPABASE_URL = 'SUA_URL_AQUI'; 
-        const SUPABASE_KEY = 'SUA_ANON_KEY_AQUI';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+       // --- CONFIGURAÇÃO SUPABASE ---
+const SUPABASE_URL = 'https://cynponjiqcszrzysuvlb.supabase.co'; 
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5bnBvbmppcWNzenJ6eXN1dmxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NTQ0NzgsImV4cCI6MjA5MjUzMDQ3OH0.STHCtMSYZwn0wI10jyRZSqp1ZSdNtm76NITGtxJAeIQ';
+
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // --- NAVEGAÇÃO ---
         function showPage(pageId) {
