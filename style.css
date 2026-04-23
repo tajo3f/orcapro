@@ -1,125 +1,84 @@
 :root {
-    --primary: #0066ff;
-    --primary-dark: #0052cc;
-    --dark: #0a1f44;
-    --text: #1e293b;
-    --text-muted: #64748b;
-    --bg: #f8fafc;
-    --white: #ffffff;
-    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --bg-color: #f3f4f6;
+    --surface: #ffffff;
+    --primary: #0f172a;
+    --primary-hover: #1e293b;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --text-main: #334155;
+    --text-light: #64748b;
+    --border: #e2e8f0;
+    --radius: 12px;
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
 
-body {
-    background-color: var(--bg);
-    color: var(--text);
-    overflow-x: hidden;
-}
+body { background-color: var(--bg-color); color: var(--text-main); padding: 40px 20px; }
 
-.hidden { display: none !important; }
+.app-container { max-width: 1200px; margin: 0 auto; }
 
-/* --- Auth Pages --- */
-.auth-container {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #0a1f44 0%, #0066ff 100%);
-}
+/* Header do App */
+.app-header { text-align: center; margin-bottom: 40px; }
+.logo { font-size: 32px; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
+.logo span { color: var(--accent); }
+.app-header p { color: var(--text-light); margin-top: 5px; }
 
-.auth-card {
-    background: var(--white);
-    padding: 40px;
-    border-radius: 16px;
-    box-shadow: var(--shadow);
-    width: 100%;
-    max-width: 400px;
-}
+/* Grid Principal */
+.dashboard-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; align-items: start; }
+@media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } }
 
-.logo-text {
-    font-size: 28px;
-    font-weight: 800;
-    color: var(--dark);
-    text-align: center;
-    letter-spacing: -1px;
-}
+/* Paineis */
+.panel { background: var(--surface); padding: 30px; border-radius: var(--radius); box-shadow: var(--shadow); }
+.panel-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+.panel-header h2 { font-size: 18px; color: var(--primary); }
+.panel-header svg { color: var(--accent); width: 20px; }
+.hint { font-size: 13px; color: var(--text-light); margin: -10px 0 20px 0; }
 
-.logo-text span { color: var(--primary); }
+/* Formulários */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.input-group { display: flex; flex-direction: column; gap: 8px; }
+.input-group.full { grid-column: span 2; }
+.input-group label { font-size: 13px; font-weight: 600; color: var(--primary); }
+input, textarea { padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; transition: 0.2s; outline: none; background: #f8fafc; }
+input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); background: white; }
 
-/* --- Dashboard Layout --- */
-#dashboard-page {
-    display: grid;
-    grid-template-columns: 260px 1fr;
-    min-height: 100vh;
-}
+/* Itens Dinâmicos */
+.item-row { display: grid; grid-template-columns: 2fr 1fr auto; gap: 15px; align-items: center; background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px dashed var(--border); }
+.btn-remove { background: #fee2e2; color: #ef4444; border: none; padding: 10px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+.btn-remove:hover { background: #fca5a5; }
 
-aside {
-    background: var(--dark);
-    padding: 30px 20px;
-    color: white;
-}
+/* Botoes e Totais */
+.btn { padding: 14px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; border: none; font-size: 15px; }
+.btn-primary { background: var(--accent); color: white; width: 100%; margin-top: 30px; font-size: 16px; }
+.btn-primary:hover { background: var(--accent-hover); transform: translateY(-2px); }
+.btn-secondary { background: white; border: 1px solid var(--border); color: var(--primary); width: 100%; }
+.btn-secondary:hover { border-color: var(--text-light); }
 
-.nav-menu { list-style: none; margin-top: 40px; }
-.nav-item {
-    padding: 12px 15px;
-    margin-bottom: 8px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s;
-    color: #94a3b8;
-}
+.total-box { background: var(--primary); color: white; padding: 20px; border-radius: 12px; margin-top: 20px; display: flex; justify-content: space-between; align-items: center; }
+.total-box h2 { color: #10b981; font-size: 28px; }
 
-.nav-item.active, .nav-item:hover {
-    background: rgba(255,255,255,0.1);
-    color: white;
-}
+.divider { height: 1px; background: var(--border); margin: 30px 0; }
 
-/* --- UI Elements --- */
-.card {
-    background: var(--white);
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-    margin-bottom: 25px;
-}
-
-.btn {
-    width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.btn-primary {
-    background: var(--primary);
-    color: white;
-}
-
-.btn-primary:hover {
-    background: var(--primary-dark);
-    transform: translateY(-2px);
-}
-
-.form-group { margin-bottom: 15px; }
-.form-group label { display: block; margin-bottom: 5px; font-size: 14px; font-weight: 500; }
-.form-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-}
-
-/* --- Tabela --- */
-.table-container { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-th { text-align: left; padding: 12px; color: var(--text-muted); font-size: 13px; border-bottom: 2px solid #f1f5f9; }
-td { padding: 15px 12px; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+/* =========================================
+   TEMPLATE DO PDF (Invisível na tela, perfeito na impressão)
+========================================= */
+.pdf-container { display: none; width: 800px; padding: 60px; background: white; color: #0f172a; }
+.pdf-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 40px; }
+.pdf-header .brand { font-size: 28px; font-weight: 800; color: #1e293b; margin-bottom: 5px; }
+.text-right { text-align: right; }
+.pdf-section { margin-bottom: 30px; }
+.pdf-section h3 { font-size: 12px; text-transform: uppercase; color: #64748b; letter-spacing: 1px; margin-bottom: 5px; }
+.pdf-section .highlight { font-size: 20px; font-weight: 700; color: #0f172a; }
+.pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+.pdf-table th { text-align: left; padding: 15px; background: #f8fafc; color: #475569; font-size: 13px; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; }
+.pdf-table th.text-right { text-align: right; }
+.pdf-table td { padding: 20px 15px; border-bottom: 1px solid #f1f5f9; font-size: 15px; }
+.pdf-total-section { display: flex; justify-content: flex-end; margin-bottom: 40px; }
+.pdf-total-box { background: #f8fafc; padding: 20px 40px; border-radius: 8px; border: 1px solid #e2e8f0; text-align: right; }
+.pdf-total-box p { font-size: 13px; color: #64748b; font-weight: 600; margin-bottom: 5px; }
+.pdf-total-box h2 { font-size: 24px; color: #2563eb; }
+.pdf-obs { background: #f8fafc; padding: 20px; border-left: 4px solid #2563eb; border-radius: 4px; margin-bottom: 40px; }
+.pdf-obs h3 { font-size: 14px; margin-bottom: 8px; color: #0f172a; }
+.pdf-obs p { font-size: 13px; color: #475569; line-height: 1.6; }
+.pdf-footer { border-top: 1px solid #e2e8f0; padding-top: 20px; text-align: center; font-size: 12px; color: #94a3b8; }
