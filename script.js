@@ -1,81 +1,140 @@
-// --- FUNÇÃO DE GERAÇÃO DE PDF CORRIGIDA ---
-function generatePDF(data) {
-    const template = document.getElementById('pdf-template');
+document.addEventListener('DOMContentLoaded', () => {
+    loadCompanyData();
+    addItem(); // Adiciona o primeiro item em branco ao carregar
+});
+
+// --- 1. MEMÓRIA DA EMPRESA (LocalStorage) ---
+// Salva os dados do cabeçalho enquanto o usuário digita
+const companyInputs = ['myCompany', 'myPhone', 'myEmail', 'myDoc'];
+companyInputs.forEach(id => {
+    document.getElementById(id).addEventListener('input', (e) => {
+        localStorage.setItem(`orcapro_${id}`, e.target.value);
+    });
+});
+
+function loadCompanyData() {
+    companyInputs.forEach(id => {
+        const saved = localStorage.getItem(`orcapro_${id}`);
+        if (saved) document.getElementById(id).value = saved;
+    });
     
-    if (!template) {
-        console.error("Template de PDF não encontrado!");
-        return;
+    // Auto-preenche a data de validade para 7 dias no futuro
+    const dateInput = document.getElementById('validDate');
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 7);
+    dateInput.value = futureDate.toISOString().split('T')[0];
+}
+
+// --- 2. SISTEMA DE ITENS DINÂMICOS ---
+let itemCount = 0;
+
+function addItem() {
+    itemCount++;
+    const container = document.getElementById('itemsContainer');
+    
+    const row = document.createElement('div');
+    row.className = 'item-row';
+    row.id = `itemRow_${itemCount}`;
+    
+    row.innerHTML = `
+        <div class="input-group">
+            <input type="text" class="item-desc" placeholder="Descrição do item ou serviço" required>
+        </div>
+        <div class="input-group">
+            <input type="number" class="item-value" placeholder="R$ 0,00" step="0.01" required oninput="calculateTotal()">
+        </div>
+        <button type="button" class="btn-remove" onclick="removeItem(${itemCount})" title="Remover Item">
+            <i data-lucide="trash-2"></i>
+        </button>
+    `;
+    
+    container.appendChild(row);
+    lucide.createIcons();
+}
+
+function removeItem(id) {
+    const row = document.getElementById(`itemRow_${id}`);
+    row.remove();
+    calculateTotal();
+}
+
+function calculateTotal() {
+    let total = 0;
+    const values = document.querySelectorAll('.item-value');
+    values.forEach(input => {
+        if(input.value) total += parseFloat(input.value);
+    });
+    
+    document.getElementById('grandTotal').innerText = formatCurrency(total);
+    return total;
+}
+
+function formatCurrency(value) {
+    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+// --- 3. GERAÇÃO DE PDF PROFISSIONAL ---
+document.getElementById('quoteForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Preparar dados da empresa (Emissor)
+    document.getElementById('pdf-my-company').innerText = document.getElementById('myCompany').value || 'Minha Empresa';
+    document.getElementById('pdf-my-doc').innerText = document.getElementById('myDoc').value;
+    document.getElementById('pdf-my-phone').innerText = document.getElementById('myPhone').value;
+    document.getElementById('pdf-my-email').innerText = document.getElementById('myEmail').value;
+    
+    // Preparar dados do cliente e gerais
+    document.getElementById('pdf-client-name').innerText = document.getElementById('clientName').value;
+    document.getElementById('pdf-number').innerText = document.getElementById('quoteNumber').value;
+    
+    // Formatar Data
+    const dateParts = document.getElementById('validDate').value.split('-');
+    document.getElementById('pdf-date').innerText = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+    
+    // Injetar Itens na Tabela do PDF
+    const tbody = document.getElementById('pdf-items-body');
+    tbody.innerHTML = ''; // Limpa tabela
+    
+    const descriptions = document.querySelectorAll('.item-desc');
+    const values = document.querySelectorAll('.item-value');
+    
+    for(let i = 0; i < descriptions.length; i++) {
+        const tr = document.createElement('tr');
+        const val = parseFloat(values[i].value || 0);
+        
+        tr.innerHTML = `
+            <td><strong>${descriptions[i].value}</strong></td>
+            <td class="text-right">${formatCurrency(val)}</td>
+        `;
+        tbody.appendChild(tr);
     }
+    
+    // Total e Observações
+    document.getElementById('pdf-grand-total').innerText = document.getElementById('grandTotal').innerText;
+    document.getElementById('pdf-obs-text').innerText = document.getElementById('obsText').value || 'Sem observações adicionais.';
 
-    // Preencher os dados no template
-    document.getElementById('pdf-client-name').innerText = data.client_name;
-    document.getElementById('pdf-service-cat').innerText = data.service_cat;
-    document.getElementById('pdf-service-desc').innerText = data.service_desc;
-    document.getElementById('pdf-amount').innerText = 'R$ ' + data.amount.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-    document.getElementById('pdf-date-now').innerText = new Date().toLocaleDateString('pt-BR');
+    // Disparar PDF
+    generatePDF(document.getElementById('clientName').value);
+});
 
-    // Configurações do PDF
+function generatePDF(clientName) {
+    const element = document.getElementById('pdf-template');
+    const btn = document.querySelector('.generate-btn');
+    
+    btn.innerText = "Gerando Documento...";
+    element.style.display = 'block'; // Mostra pro script ler
+    
     const opt = {
-        margin: [10, 10],
-        filename: `Orcamento_${data.client_name.replace(/\s+/g, '_')}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, logging: false },
+        margin: [0, 0],
+        filename: `Proposta_${clientName.replace(/\s+/g, '_')}.pdf`,
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 3, useCORS: true }, // Scale 3 garante altíssima resolução
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    // Tornar visível temporariamente para o html2pdf capturar
-    template.style.display = 'block';
-
-    // Gerar e baixar
-    html2pdf().set(opt).from(template).save().then(() => {
-        template.style.display = 'none'; // Esconder de novo
-        console.log("PDF gerado com sucesso!");
-    }).catch(err => {
-        console.error("Erro ao gerar PDF:", err);
-        template.style.display = 'none';
-    });
-}
-
-// --- EVENTO DE SUBMIT ATUALIZADO ---
-const budgetForm = document.getElementById('budgetForm');
-if (budgetForm) {
-    budgetForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const btn = document.getElementById('btnSave');
-        const originalText = btn.innerText;
-        btn.innerText = "Salvando e Gerando PDF...";
-        btn.disabled = true;
-
-        const budgetData = {
-            client_name: document.getElementById('clientName').value,
-            budget_date: document.getElementById('budgetDate').value,
-            amount: parseFloat(document.getElementById('budgetAmount').value),
-            service_desc: document.getElementById('serviceDesc').value,
-            service_cat: document.getElementById('serviceCat').value || 'Geral'
-        };
-
-        try {
-            // 1. Tentar salvar no Supabase
-            const { error } = await supabaseClient.from('budgets').insert([budgetData]);
-
-            if (error) throw error;
-
-            // 2. Se salvou, gera o PDF imediatamente
-            generatePDF(budgetData);
-
-            // 3. Limpar formulário e atualizar tabela
-            this.reset();
-            if (typeof fetchBudgets === 'function') fetchBudgets();
-            
-            alert("Orçamento salvo e PDF iniciado!");
-
-        } catch (error) {
-            console.error("Erro na operação:", error);
-            alert("Erro ao salvar dados. O PDF não será gerado.");
-        } finally {
-            btn.innerText = originalText;
-            btn.disabled = false;
-        }
+    html2pdf().set(opt).from(element).save().then(() => {
+        element.style.display = 'none'; // Esconde novamente
+        btn.innerHTML = '<i data-lucide="file-down"></i> Gerar e Baixar PDF Profissional';
+        lucide.createIcons();
     });
 }
