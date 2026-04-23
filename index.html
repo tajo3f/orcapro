@@ -6,6 +6,7 @@
     <title>OrçaPro | Gestão Inteligente de Orçamentos</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
@@ -66,7 +67,6 @@
                 <ul class="nav-menu">
                     <li class="nav-item active">📊 Dashboard</li>
                     <li class="nav-item" onclick="scrollToForm()">📝 Criar Orçamento</li>
-                    <li class="nav-item">📂 Meus Orçamentos</li>
                     <li class="nav-item" style="margin-top: 50px; color: #f87171;" onclick="location.reload()">🚪 Sair</li>
                 </ul>
             </nav>
@@ -76,7 +76,7 @@
             <header class="dash-header">
                 <div>
                     <h2>Bem-vindo, <span id="user-display">Usuário</span></h2>
-                    <p style="color: var(--text-muted); font-size: 14px;">Seus orçamentos estão sincronizados com o Supabase.</p>
+                    <p style="color: var(--text-muted); font-size: 14px;">Dados salvos em tempo real no Supabase.</p>
                 </div>
                 <button class="btn btn-primary" style="width: auto; padding: 10px 24px;" onclick="scrollToForm()">+ Novo Orçamento</button>
             </header>
@@ -86,7 +86,7 @@
                 <form id="budgetForm" class="budget-form">
                     <div class="form-group">
                         <label>Cliente</label>
-                        <input type="text" id="clientName" placeholder="Nome do cliente ou empresa" required>
+                        <input type="text" id="clientName" placeholder="Nome do cliente" required>
                     </div>
                     <div class="form-group">
                         <label>Data</label>
@@ -98,20 +98,20 @@
                     </div>
                     <div class="form-group">
                         <label>Categoria</label>
-                        <input type="text" id="serviceCat" placeholder="Ex: Desenvolvimento Web">
+                        <input type="text" id="serviceCat" placeholder="Ex: Web Design">
                     </div>
                     <div class="form-group full-width">
-                        <label>Descrição do Serviço</label>
-                        <input type="text" id="serviceDesc" placeholder="Descreva o que será entregue" required>
+                        <label>Descrição Detalhada</label>
+                        <input type="text" id="serviceDesc" placeholder="O que será feito?" required>
                     </div>
                     <div class="full-width">
-                        <button type="submit" class="btn btn-primary" id="btnSave">Salvar e Baixar PDF</button>
+                        <button type="submit" class="btn btn-primary" id="btnSave">Salvar e Gerar PDF</button>
                     </div>
                 </form>
             </div>
 
             <div class="card">
-                <h3 style="margin-bottom: 20px;">Histórico Recente</h3>
+                <h3 style="margin-bottom: 20px;">Meus Orçamentos</h3>
                 <div class="table-container">
                     <table id="budgetTable">
                         <thead>
@@ -130,145 +130,37 @@
         </main>
     </section>
 
-    <div id="pdf-template" style="padding: 50px; color: #1e293b; background: white; display: none; font-family: 'Inter', sans-serif;">
-
-    <!-- HEADER -->
-    <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #0a1f44; padding-bottom: 20px; margin-bottom: 30px;">
-
-        <!-- LOGO / BRAND -->
-        <div>
-            <h1 style="color: #0a1f44; margin: 0; font-size: 34px; letter-spacing: 1px;">
-                ORÇA<span style="color:#0066ff">PRO</span>
-            </h1>
-            <p style="font-size: 13px; color: #64748b; margin-top: 5px;">
-                Sistema Profissional de Orçamentos & Gestão Comercial
-            </p>
-        </div>
-
-        <!-- INFO DO DOCUMENTO -->
-        <div style="text-align: right; font-size: 13px;">
-            <p style="margin: 0; font-weight: bold; color: #0a1f44;">
-                ORÇAMENTO PROFISSIONAL
-            </p>
-            <p style="margin: 5px 0 0 0;">
-                <span style="color:#64748b;">Data:</span> 
-                <span id="pdf-date-now" style="font-weight: 600;"></span>
-            </p>
-            <p style="margin: 5px 0 0 0;">
-                <span style="color:#64748b;">ID do Documento:</span> 
-                <span id="pdf-id" style="font-weight: 600;"></span>
-            </p>
-        </div>
-
-    </div>
-
-    <!-- DADOS DO CLIENTE -->
-    <div style="margin-bottom: 30px;">
-        <h2 style="font-size: 18px; color: #0a1f44; margin-bottom: 10px;">Dados do Cliente</h2>
-
-        <div style="background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0;">
-            <p style="margin: 5px 0;"><strong>Nome:</strong> <span id="pdf-client-name"></span></p>
-            <p style="margin: 5px 0;"><strong>Contato:</strong> <span id="pdf-client-contact"></span></p>
-            <p style="margin: 5px 0;"><strong>Empresa:</strong> <span id="pdf-client-company"></span></p>
-        </div>
-    </div>
-
-    <!-- SERVIÇO -->
-    <div style="margin-bottom: 30px;">
-        <h2 style="font-size: 18px; color: #0a1f44; margin-bottom: 10px;">Descrição do Serviço</h2>
-
-        <div style="background: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0;">
-            <p id="pdf-service-description" style="margin: 0; line-height: 1.6; color: #334155;"></p>
-        </div>
-    </div>
-
-    <!-- VALORES -->
-    <div style="margin-bottom: 30px;">
-        <h2 style="font-size: 18px; color: #0a1f44; margin-bottom: 10px;">Resumo Financeiro</h2>
-
-        <div style="display: flex; justify-content: space-between; background: #f1f5f9; padding: 20px; border-radius: 10px;">
-
-            <div>
-                <p style="margin: 0; color: #64748b;">Valor do Serviço</p>
-                <h3 id="pdf-service-value" style="margin: 5px 0 0 0; color: #0a1f44;"></h3>
-            </div>
-
+    <div id="pdf-template" style="display: none; padding: 40px; font-family: 'Inter', sans-serif; color: #1e293b;">
+        <div style="border-bottom: 2px solid #0a1f44; padding-bottom: 20px; margin-bottom: 20px; display: flex; justify-content: space-between;">
+            <h1>ORÇAPRO</h1>
             <div style="text-align: right;">
-                <p style="margin: 0; color: #64748b;">Status</p>
-                <h3 style="margin: 5px 0 0 0; color: #16a34a;">ORÇAMENTO EMITIDO</h3>
+                <p>Data: <span id="pdf-date-now"></span></p>
+                <p>ID: #<span id="pdf-id"></span></p>
             </div>
-
         </div>
-    </div>
-
-    <!-- TERMOS -->
-    <div style="margin-bottom: 40px;">
-        <h2 style="font-size: 16px; color: #0a1f44;">Termos e Condições</h2>
-        <p style="font-size: 12px; color: #64748b; line-height: 1.6;">
-            Este orçamento tem validade de 7 dias após a emissão. Valores podem ser ajustados conforme necessidade do projeto.
-            A confirmação do serviço será feita mediante aprovação do cliente.
-        </p>
-    </div>
-
-    <!-- RODAPÉ -->
-    <div style="border-top: 1px solid #e2e8f0; padding-top: 15px; font-size: 12px; color: #64748b; display: flex; justify-content: space-between;">
-        <div>
-            OrçaPro © Sistema de Orçamentos Profissionais
-        </div>
-        <div>
-            O sistema que estava faltando em sua empresa!
-        </div>
-    </div>
-
-</div>
-
-        <div style="margin-top: 40px;">
-            <p style="font-size: 12px; text-transform: uppercase; color: #64748b; margin-bottom: 5px;">Proposta preparada para:</p>
-            <h2 style="margin: 0; color: #0a1f44;" id="pdf-client-name"></h2>
-        </div>
-
-        <div style="margin-top: 40px;">
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead>
-                    <tr style="background-color: #0a1f44; color: white;">
-                        <th style="padding: 15px; text-align: left;">DESCRIÇÃO DOS SERVIÇOS</th>
-                        <th style="padding: 15px; text-align: right;">INVESTIMENTO</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="padding: 30px 15px; border-bottom: 1px solid #e2e8f0;">
-                            <strong id="pdf-service-cat" style="font-size: 16px;"></strong><br>
-                            <p id="pdf-service-desc" style="margin-top: 10px; color: #475569; line-height: 1.5;"></p>
-                        </td>
-                        <td style="padding: 30px 15px; border-bottom: 1px solid #e2e8f0; text-align: right; font-size: 20px; font-weight: 700; color: #0a1f44;" id="pdf-amount"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div style="margin-top: 50px; padding: 25px; background: #f8fafc; border-left: 4px solid #0066ff;">
-            <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #0a1f44;">TERMOS E CONDIÇÕES</h4>
-            <p style="font-size: 12px; color: #64748b; margin: 3px 0;">• Validade desta proposta: 10 dias úteis.</p>
-            <p style="font-size: 12px; color: #64748b; margin: 3px 0;">• Pagamento via PIX ou Transferência Bancária.</p>
-        </div>
-
-        <div style="margin-top: 80px; text-align: center; font-size: 12px; color: #94a3b8;">
-            <p>Este documento é uma proposta comercial formal gerada pela plataforma OrçaPro.</p>
+        <h3>Proposta para: <span id="pdf-client-name"></span></h3>
+        <p><strong>Serviço:</strong> <span id="pdf-service-cat"></span></p>
+        <p><strong>Descrição:</strong> <span id="pdf-service-desc"></span></p>
+        <h2 style="color: #0a1f44;">Total: <span id="pdf-amount"></span></h2>
+        <div style="margin-top: 50px; font-size: 12px; color: #64748b; border-top: 1px solid #eee; pt: 10px;">
+            Documento gerado eletronicamente via OrçaPro.
         </div>
     </div>
 
     <script>
-       // --- CONFIGURAÇÃO SUPABASE ---
-const SUPABASE_URL = 'https://cynponjiqcszrzysuvlb.supabase.co'; 
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5bnBvbmppcWNzenJ6eXN1dmxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NTQ0NzgsImV4cCI6MjA5MjUzMDQ3OH0.STHCtMSYZwn0wI10jyRZSqp1ZSdNtm76NITGtxJAeIQ';
+        // --- 1. CONFIGURAÇÃO ---
+        const SUPABASE_URL = 'https://cynponjiqcszrzysuvlb.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5bnBvbmppcWNzenJ6eXN1dmxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NTQ0NzgsImV4cCI6MjA5MjUzMDQ3OH0.STHCtMSYZwn0wI10jyRZSqp1ZSdNtm76NITGtxJAeIQ';
+        
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        // --- NAVEGAÇÃO ---
+        // --- 2. NAVEGAÇÃO ---
         function showPage(pageId) {
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-            document.getElementById(pageId).classList.remove('hidden');
+            const target = document.getElementById(pageId);
+            if(target) {
+                target.classList.remove('hidden');
+            }
             if(pageId === 'dashboard-page') fetchBudgets();
         }
 
@@ -276,31 +168,7 @@ const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // --- BUSCAR DADOS (SUPABASE) ---
-        async function fetchBudgets() {
-            const { data, error } = await supabase
-                .from('budgets')
-                .select('*')
-                .order('created_at', { ascending: false });
-
-            if (error) return console.error('Erro:', error);
-
-            const tableBody = document.querySelector('#budgetTable tbody');
-            tableBody.innerHTML = '';
-
-            data.forEach(item => {
-                const row = tableBody.insertRow();
-                row.innerHTML = `
-                    <td><strong>${item.client_name}</strong></td>
-                    <td>${item.service_desc}</td>
-                    <td>R$ ${parseFloat(item.amount).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
-                    <td>${new Date(item.budget_date).toLocaleDateString('pt-BR')}</td>
-                    <td><span class="status-badge" style="background:#dcfce7; color:#166534;">Sincronizado</span></td>
-                `;
-            });
-        }
-
-        // --- LOGIN / CADASTRO (LÓGICA SIMPLES) ---
+        // --- 3. LOGIN / CADASTRO ---
         document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
             showPage('dashboard-page');
@@ -313,13 +181,38 @@ const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             showPage('dashboard-page');
         });
 
-        // --- SALVAR ORÇAMENTO E GERAR PDF ---
-        const budgetForm = document.getElementById('budgetForm');
+        // --- 4. DADOS (SUPABASE) ---
+        async function fetchBudgets() {
+            const { data, error } = await supabaseClient
+                .from('budgets')
+                .select('*')
+                .order('created_at', { ascending: false });
 
-        budgetForm.addEventListener('submit', async function(e) {
+            if (error) {
+                console.error('Erro ao buscar dados:', error);
+                return;
+            }
+
+            const tableBody = document.querySelector('#budgetTable tbody');
+            tableBody.innerHTML = '';
+
+            data.forEach(item => {
+                const row = tableBody.insertRow();
+                row.innerHTML = `
+                    <td><strong>${item.client_name}</strong></td>
+                    <td>${item.service_desc}</td>
+                    <td>R$ ${parseFloat(item.amount).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td>${new Date(item.budget_date).toLocaleDateString('pt-BR')}</td>
+                    <td><span class="status-badge" style="background:#dcfce7; color:#166534; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Salvo</span></td>
+                `;
+            });
+        }
+
+        // --- 5. SALVAR E GERAR PDF ---
+        document.getElementById('budgetForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const btn = document.getElementById('btnSave');
-            btn.innerText = "Processando...";
+            btn.innerText = "Salvando...";
             btn.disabled = true;
 
             const budgetData = {
@@ -327,33 +220,26 @@ const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                 budget_date: document.getElementById('budgetDate').value,
                 amount: parseFloat(document.getElementById('budgetAmount').value),
                 service_desc: document.getElementById('serviceDesc').value,
-                service_cat: document.getElementById('serviceCat').value || 'Serviço Profissional'
+                service_cat: document.getElementById('serviceCat').value || 'Geral'
             };
 
-            // 1. Salva no Supabase
-            const { error } = await supabase.from('budgets').insert([budgetData]);
+            const { error } = await supabaseClient.from('budgets').insert([budgetData]);
 
             if (error) {
-                alert("Erro ao salvar no banco!");
+                alert("Erro ao conectar com o banco. Verifique sua tabela 'budgets'.");
+                console.error(error);
             } else {
-                // 2. Gera o PDF Profissional
                 generatePDF(budgetData);
-                
-                // 3. Reseta e Atualiza
-                budgetForm.reset();
+                this.reset();
                 fetchBudgets();
-                alert("Orçamento salvo com sucesso!");
             }
 
             btn.innerText = "Salvar e Baixar PDF";
             btn.disabled = false;
         });
 
-        // --- MOTOR DE PDF ---
         function generatePDF(data) {
             const template = document.getElementById('pdf-template');
-            
-            // Inserção de dados no template
             document.getElementById('pdf-client-name').innerText = data.client_name;
             document.getElementById('pdf-service-cat').innerText = data.service_cat;
             document.getElementById('pdf-service-desc').innerText = data.service_desc;
@@ -361,19 +247,19 @@ const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             document.getElementById('pdf-date-now').innerText = new Date().toLocaleDateString('pt-BR');
             document.getElementById('pdf-id').innerText = Math.floor(1000 + Math.random() * 9000);
 
-            const opt = {
-                margin: 0,
-                filename: `Orcamento_${data.client_name.replace(/\s+/g, '_')}.pdf`,
-                image: { type: 'jpeg', quality: 1.0 },
-                html2canvas: { scale: 3, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
             template.style.display = 'block';
-            html2pdf().set(opt).from(template).save().then(() => {
+            html2pdf().from(template).save().then(() => {
                 template.style.display = 'none';
             });
         }
+
+        // Tentar carregar dados se já estiver no dashboard
+        window.onload = () => {
+            // Se houver erro de rede, avisa no console
+            if (typeof supabase === 'undefined') {
+                console.error("SDK do Supabase não carregou!");
+            }
+        };
     </script>
 </body>
 </html>
