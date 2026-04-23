@@ -4,267 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OrçaPro | Gestão Inteligente de Orçamentos</title>
+    
+    <link rel="stylesheet" href="style.css">
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #0a1f44;
-            --accent: #0066ff;
-            --bg-light: #f8fafc;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --white: #ffffff;
-            --border: #e2e8f0;
-            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --transition: all 0.3s ease;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-light);
-            color: var(--text-main);
-            overflow-x: hidden;
-        }
-
-        /* --- UTILITÁRIOS DE ANIMAÇÃO --- */
-        .fade-in {
-            animation: fadeIn 0.5s ease forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .hidden { display: none !important; }
-
-        /* --- ESTILO DAS TELAS DE ACESSO (LOGIN/CADASTRO) --- */
-        .auth-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #0a1f44 0%, #1e293b 100%);
-            padding: 20px;
-        }
-
-        .auth-card {
-            background: var(--white);
-            padding: 40px;
-            border-radius: 16px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.3);
-        }
-
-        .auth-header {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-
-        .logo-text {
-            font-weight: 700;
-            font-size: 24px;
-            color: var(--primary);
-            letter-spacing: -1px;
-        }
-
-        .logo-text span { color: var(--accent); }
-
-        .auth-header p {
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-top: 8px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: var(--text-main);
-        }
-
-        input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            outline: none;
-            transition: var(--transition);
-            font-size: 14px;
-        }
-
-        input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
-        }
-
-        .btn {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 14px;
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            color: var(--white);
-        }
-
-        .btn-primary:hover {
-            background-color: #162e5a;
-            transform: translateY(-1px);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border);
-            margin-top: 12px;
-        }
-
-        .btn-outline:hover {
-            background: #f1f5f9;
-        }
-
-        .auth-footer {
-            margin-top: 24px;
-            text-align: center;
-            font-size: 13px;
-        }
-
-        .auth-footer a {
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        /* --- DASHBOARD LAYOUT --- */
-        #dashboard-page {
-            display: grid;
-            grid-template-columns: 260px 1fr;
-            min-height: 100vh;
-        }
-
-        /* Sidebar */
-        aside {
-            background-color: var(--primary);
-            color: var(--white);
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .nav-menu {
-            list-style: none;
-            margin-top: 40px;
-        }
-
-        .nav-item {
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            color: #cbd5e1;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: var(--white);
-        }
-
-        /* Main Content */
-        main {
-            padding: 40px;
-            max-width: 1200px;
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        header.dash-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-        }
-
-        .card {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: var(--shadow);
-            margin-bottom: 30px;
-        }
-
-        /* Form Orçamento */
-        .budget-form {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-
-        .full-width { grid-column: span 2; }
-
-        /* Tabela */
-        .table-container {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th {
-            text-align: left;
-            padding: 12px;
-            border-bottom: 2px solid var(--border);
-            color: var(--text-muted);
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        td {
-            padding: 16px 12px;
-            border-bottom: 1px solid var(--border);
-            font-size: 14px;
-        }
-
-        .status-badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        @media (max-width: 768px) {
-            #dashboard-page { grid-template-columns: 1fr; }
-            aside { display: none; } /* Simplificação para mobile */
-            .budget-form { grid-template-columns: 1fr; }
-            .full-width { grid-column: span 1; }
-        }
-    </style>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
@@ -342,7 +87,7 @@
             <header class="dash-header">
                 <div>
                     <h2>Bem-vindo, <span id="user-display">Usuário</span></h2>
-                    <p style="color: var(--text-muted); font-size: 14px;">Aqui está o resumo dos seus orçamentos.</p>
+                    <p style="color: var(--text-muted); font-size: 14px;">Gerencie seus orçamentos com facilidade.</p>
                 </div>
                 <button class="btn btn-primary" style="width: auto; padding: 10px 24px;" onclick="scrollToForm()">+ Novo Orçamento</button>
             </header>
@@ -359,25 +104,27 @@
                         <input type="date" id="budgetDate" required>
                     </div>
                     <div class="form-group">
-                        <label>Valor (R$)</label>
+                        <label>Valor Total (R$)</label>
                         <input type="number" id="budgetAmount" placeholder="0,00" step="0.01" required>
                     </div>
                     <div class="form-group">
-                        <label>Categoria</label>
-                        <input type="text" placeholder="Ex: Consultoria, Venda...">
+                        <label>Categoria do Serviço</label>
+                        <input type="text" id="serviceCat" placeholder="Ex: Design, Desenvolvimento">
                     </div>
                     <div class="form-group full-width">
-                        <label>Descrição do Serviço</label>
-                        <input type="text" id="serviceDesc" placeholder="Descreva brevemente o que será entregue" required>
+                        <label>Descrição Detalhada</label>
+                        <input type="text" id="serviceDesc" placeholder="O que será entregue?" required>
                     </div>
                     <div class="full-width">
-                        <button type="submit" class="btn btn-primary" style="background-color: var(--accent);">Salvar e Gerar PDF</button>
+                        <button type="submit" class="btn btn-primary" style="background-color: var(--accent);">
+                            Salvar e Gerar Orçamento (PDF)
+                        </button>
                     </div>
                 </form>
             </div>
 
             <div class="card">
-                <h3 style="margin-bottom: 20px;">Últimos Orçamentos</h3>
+                <h3 style="margin-bottom: 20px;">Histórico de Orçamentos</h3>
                 <div class="table-container">
                     <table id="budgetTable">
                         <thead>
@@ -390,91 +137,145 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><strong>Exemplo Tech LTDA</strong></td>
-                                <td>Desenvolvimento Web</td>
-                                <td>R$ 4.500,00</td>
-                                <td>23/04/2026</td>
-                                <td><span class="status-badge">Enviado</span></td>
-                            </tr>
-                        </tbody>
+                            </tbody>
                     </table>
                 </div>
             </div>
         </main>
     </section>
 
+    <div id="pdf-template" style="padding: 40px; color: #1e293b; display: none;">
+        <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #0a1f44; padding-bottom: 20px;">
+            <div>
+                <h1 style="color: #0a1f44; margin: 0;">ORÇAPRO</h1>
+                <p style="font-size: 12px; color: #64748b;">Proposta Comercial Profissional</p>
+            </div>
+            <div style="text-align: right;">
+                <p style="font-weight: bold;" id="pdf-date-now"></p>
+                <p style="font-size: 12px;">ID: #<span id="pdf-id"></span></p>
+            </div>
+        </div>
+
+        <div style="margin-top: 40px;">
+            <h3 style="color: #0a1f44; text-transform: uppercase; font-size: 14px;">Dados do Cliente</h3>
+            <p style="font-size: 18px; font-weight: bold;" id="pdf-client-name"></p>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background-color: #f1f5f9;">
+                        <th style="padding: 12px; text-align: left; border: 1px solid #e2e8f0;">Descrição do Serviço</th>
+                        <th style="padding: 12px; text-align: right; border: 1px solid #e2e8f0;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 20px 12px; border: 1px solid #e2e8f0;">
+                            <strong id="pdf-service-cat"></strong><br>
+                            <span id="pdf-service-desc" style="font-size: 13px; color: #64748b;"></span>
+                        </td>
+                        <td style="padding: 20px 12px; border: 1px solid #e2e8f0; text-align: right; font-weight: bold; font-size: 16px;" id="pdf-amount"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 50px; background: #f8fafc; padding: 20px; border-radius: 8px;">
+            <p style="font-size: 12px; color: #64748b;"><strong>Validade da Proposta:</strong> 15 dias corridos.</p>
+            <p style="font-size: 12px; color: #64748b;"><strong>Forma de Pagamento:</strong> A combinar.</p>
+        </div>
+
+        <div style="margin-top: 60px; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 20px;">
+            <p style="font-size: 14px; font-weight: bold;">OrçaPro - Gestão Digital</p>
+            <p style="font-size: 10px; color: #94a3b8;">Documento gerado eletronicamente.</p>
+        </div>
+    </div>
+
     <script>
-        // --- GERENCIADOR DE ROTAS SIMPLES ---
+        // --- NAVEGAÇÃO ---
         function showPage(pageId) {
-            document.getElementById('login-page').classList.add('hidden');
-            document.getElementById('register-page').classList.add('hidden');
-            document.getElementById('dashboard-page').classList.add('hidden');
-            
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
             document.getElementById(pageId).classList.remove('hidden');
         }
 
-        // --- LOGIN SIMULADO ---
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        // --- LOGIN E CADASTRO ---
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            // Simula autenticação
             showPage('dashboard-page');
         });
 
-        // --- CADASTRO COM VALIDAÇÃO ---
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const name = document.getElementById('regName').value;
-            const pass = document.getElementById('regPass').value;
-            const confirm = document.getElementById('regPassConfirm').value;
-
-            if(pass.length < 6) {
-                alert("A senha deve ter pelo menos 6 caracteres.");
-                return;
-            }
-
-            if(pass !== confirm) {
-                alert("As senhas não coincidem!");
-                return;
-            }
-
             document.getElementById('user-display').innerText = name.split(' ')[0];
             showPage('dashboard-page');
-        });
-
-        // --- LÓGICA DO DASHBOARD (ORÇAMENTOS) ---
-        const budgetForm = document.getElementById('budgetForm');
-        const budgetTable = document.getElementById('budgetTable').getElementsByTagName('tbody')[0];
-
-        budgetForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Captura valores
-            const client = document.getElementById('clientName').value;
-            const service = document.getElementById('serviceDesc').value;
-            const amount = document.getElementById('budgetAmount').value;
-            const date = document.getElementById('budgetDate').value;
-
-            // Cria nova linha na tabela
-            const newRow = budgetTable.insertRow(0); // Adiciona no topo
-            newRow.classList.add('fade-in');
-
-            newRow.innerHTML = `
-                <td><strong>${client}</strong></td>
-                <td>${service}</td>
-                <td>R$ ${parseFloat(amount).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
-                <td>${date.split('-').reverse().join('/')}</td>
-                <td><span class="status-badge" style="background: #e0f2fe; color: #0369a1;">Novo</span></td>
-            `;
-
-            // Feedback e Reset
-            alert("Orçamento salvo com sucesso!");
-            budgetForm.reset();
         });
 
         function scrollToForm() {
             document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
         }
+
+        // --- GERAÇÃO DE PDF E LÓGICA DE NEGÓCIO ---
+        const budgetForm = document.getElementById('budgetForm');
+        const budgetTable = document.querySelector('#budgetTable tbody');
+
+        budgetForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Dados
+            const data = {
+                client: document.getElementById('clientName').value,
+                date: document.getElementById('budgetDate').value,
+                amount: document.getElementById('budgetAmount').value,
+                desc: document.getElementById('serviceDesc').value,
+                cat: document.getElementById('serviceCat').value || 'Serviços Gerais'
+            };
+
+            // 1. Adicionar na Tabela do Dashboard
+            const row = budgetTable.insertRow(0);
+            row.classList.add('fade-in');
+            row.innerHTML = `
+                <td><strong>${data.client}</strong></td>
+                <td>${data.desc}</td>
+                <td>R$ ${parseFloat(data.amount).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                <td>${data.date.split('-').reverse().join('/')}</td>
+                <td><span class="status-badge status-sent">Enviado</span></td>
+            `;
+
+            // 2. Preparar e Gerar PDF
+            generatePDF(data);
+
+            budgetForm.reset();
+        });
+
+        function generatePDF(data) {
+            const template = document.getElementById('pdf-template');
+            
+            // Preenche o template invisível com os dados
+            document.getElementById('pdf-client-name').innerText = data.client;
+            document.getElementById('pdf-service-cat').innerText = data.cat;
+            document.getElementById('pdf-service-desc').innerText = data.desc;
+            document.getElementById('pdf-amount').innerText = 'R$ ' + parseFloat(data.amount).toLocaleString('pt-BR', {minimumFractionDigits: 2});
+            document.getElementById('pdf-date-now').innerText = new Date().toLocaleDateString('pt-BR');
+            document.getElementById('pdf-id').innerText = Math.floor(1000 + Math.random() * 9000);
+
+            // Opções do PDF
+            const opt = {
+                margin:       10,
+                filename:     `Orcamento_${data.client.replace(/\s+/g, '_')}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Torna visível temporariamente para o print, depois oculta
+            template.style.display = 'block';
+            html2pdf().set(opt).from(template).save().then(() => {
+                template.style.display = 'none';
+            });
+        }
     </script>
 </body>
 </html>
+
