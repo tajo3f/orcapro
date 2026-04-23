@@ -1,164 +1,578 @@
-:root {
-    --bg-color: #f3f4f6;
-    --surface: #ffffff;
-    --primary: #0f172a;
-    --primary-hover: #1e293b;
-    --accent: #2563eb;
-    --accent-hover: #1d4ed8;
-    --text-main: #334155;
-    --text-light: #64748b;
-    --border: #e2e8f0;
-    --radius: 12px;
-    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+/* ===================================================
+   ORÇAPRO PREMIUM UI 2026
+   Versão moderna / elegante / profissional
+=================================================== */
+
+:root{
+    --bg:#eef2ff;
+    --bg-2:#f8fafc;
+    --surface:rgba(255,255,255,.82);
+    --surface-strong:#ffffff;
+
+    --primary:#0f172a;
+    --primary-2:#1e293b;
+
+    --accent:#2563eb;
+    --accent-2:#1d4ed8;
+    --accent-3:#60a5fa;
+
+    --success:#10b981;
+    --danger:#ef4444;
+    --warning:#f59e0b;
+
+    --text:#334155;
+    --text-soft:#64748b;
+    --line:#e2e8f0;
+
+    --radius:18px;
+    --radius-sm:12px;
+
+    --shadow:
+        0 10px 30px rgba(15,23,42,.08),
+        0 4px 10px rgba(15,23,42,.04);
+
+    --shadow-hover:
+        0 20px 40px rgba(15,23,42,.12),
+        0 8px 20px rgba(15,23,42,.06);
+
+    --glass: blur(18px);
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-
-body { background-color: var(--bg-color); color: var(--text-main); padding: 40px 20px; }
-
-.app-container { max-width: 1200px; margin: 0 auto; }
-
-/* Header do App */
-.app-header { text-align: center; margin-bottom: 40px; }
-.logo { font-size: 32px; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
-.logo span { color: var(--accent); }
-.app-header p { color: var(--text-light); margin-top: 5px; }
-
-/* Grid Principal */
-.dashboard-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; align-items: start; }
-@media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } }
-
-/* Paineis */
-.panel { background: var(--surface); padding: 30px; border-radius: var(--radius); box-shadow: var(--shadow); }
-.panel-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
-.panel-header h2 { font-size: 18px; color: var(--primary); }
-.panel-header svg { color: var(--accent); width: 20px; }
-.hint { font-size: 13px; color: var(--text-light); margin: -10px 0 20px 0; }
-
-/* Formulários */
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.input-group { display: flex; flex-direction: column; gap: 8px; }
-.input-group.full { grid-column: span 2; }
-.input-group label { font-size: 13px; font-weight: 600; color: var(--primary); }
-input, textarea { padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; transition: 0.2s; outline: none; background: #f8fafc; }
-input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); background: white; }
-
-/* Itens Dinâmicos */
-.item-row { display: grid; grid-template-columns: 2fr 1fr auto; gap: 15px; align-items: center; background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px dashed var(--border); }
-.btn-remove { background: #fee2e2; color: #ef4444; border: none; padding: 10px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
-.btn-remove:hover { background: #fca5a5; }
-
-/* Botoes e Totais */
-.btn { padding: 14px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; border: none; font-size: 15px; }
-.btn-primary { background: var(--accent); color: white; width: 100%; margin-top: 30px; font-size: 16px; }
-.btn-primary:hover { background: var(--accent-hover); transform: translateY(-2px); }
-.btn-secondary { background: white; border: 1px solid var(--border); color: var(--primary); width: 100%; }
-.btn-secondary:hover { border-color: var(--text-light); }
-
-.total-box { background: var(--primary); color: white; padding: 20px; border-radius: 12px; margin-top: 20px; display: flex; justify-content: space-between; align-items: center; }
-.total-box h2 { color: #10b981; font-size: 28px; }
-
-.divider { height: 1px; background: var(--border); margin: 30px 0; }
-
-/* DESIGN PDF INSPIRADO NA IMAGEM */
-.pdf-container {
-    width: 210mm; /* Tamanho A4 exato */
-    min-height: 297mm;
-    padding: 20mm;
-    position: relative;
-    background: white;
-    color: #333;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-.pdf-shapes-top {
-    position: absolute;
-    top: 0; right: 0;
-    width: 150px; height: 100px;
-    background: linear-gradient(225deg, #0033bb 0%, #0033bb 50%, transparent 50%);
+html{
+    scroll-behavior:smooth;
 }
 
-.pdf-shapes-bottom {
-    position: absolute;
-    bottom: 0; left: 0;
-    width: 200px; height: 150px;
-    background: linear-gradient(45deg, #0033bb 0%, #0033bb 40%, #0066ff 40%, #0066ff 50%, transparent 50%);
+body{
+    font-family:'Plus Jakarta Sans',sans-serif;
+    color:var(--text);
+    background:
+        radial-gradient(circle at top left,#dbeafe 0%,transparent 30%),
+        radial-gradient(circle at bottom right,#bfdbfe 0%,transparent 28%),
+        linear-gradient(135deg,#eef2ff 0%,#f8fafc 100%);
+    min-height:100vh;
+    padding:40px 20px;
 }
 
-.company-name-pdf {
-    color: #0033bb;
-    font-size: 24px;
-    font-weight: 800;
-    text-transform: uppercase;
-    margin-bottom: 30px;
+/* =======================================
+   WRAPPER
+======================================= */
+
+.app-container{
+    max-width:1320px;
+    margin:auto;
 }
 
-.title-blue {
-    color: #0033bb;
-    font-size: 28px;
-    font-weight: 800;
-    margin-top: 20px;
+/* =======================================
+   HEADER
+======================================= */
+
+.app-header{
+    text-align:center;
+    margin-bottom:38px;
 }
 
-.pdf-header-new {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 50px;
+.logo{
+    font-size:44px;
+    font-weight:800;
+    letter-spacing:-2px;
+    color:var(--primary);
+    line-height:1;
 }
 
-.header-right {
-    text-align: right;
-    font-size: 13px;
-    color: #444;
-    line-height: 1.8;
+.logo span{
+    background:linear-gradient(135deg,var(--accent),#38bdf8);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
 }
 
-.pdf-client-section { margin-bottom: 40px; }
-.pdf-client-section h3 { color: #0033bb; font-size: 16px; margin-bottom: 5px; }
-.client-highlight { font-size: 18px; font-weight: 600; }
-
-.pdf-table-new { width: 100%; border-collapse: collapse; margin-top: 20px; }
-.pdf-table-new th {
-    color: #0033bb;
-    border-bottom: 3px solid #0033bb;
-    padding: 10px;
-    text-align: left;
-    font-weight: 800;
+.app-header p{
+    margin-top:10px;
+    font-size:15px;
+    color:var(--text-soft);
+    letter-spacing:.4px;
 }
 
-.pdf-table-new td {
-    padding: 15px 10px;
-    border-bottom: 1px solid #eee;
-    font-size: 14px;
-    vertical-align: top;
+/* =======================================
+   GRID
+======================================= */
+
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:420px 1fr;
+    gap:28px;
+    align-items:start;
 }
 
-.pdf-total-row {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 20px;
+@media(max-width:1100px){
+    .dashboard-grid{
+        grid-template-columns:1fr;
+    }
 }
 
-.total-label {
-    background: #0033bb;
-    color: white;
-    padding: 10px 30px;
-    font-weight: 800;
-    font-size: 20px;
+/* =======================================
+   PANELS
+======================================= */
+
+.panel{
+    background:var(--surface);
+    backdrop-filter:var(--glass);
+    -webkit-backdrop-filter:var(--glass);
+    border:1px solid rgba(255,255,255,.55);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:28px;
+    transition:.25s ease;
 }
 
-.pdf-footer-info {
-    margin-top: 60px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
+.panel:hover{
+    transform:translateY(-4px);
+    box-shadow:var(--shadow-hover);
 }
 
-.pdf-footer-info h4 {
-    color: #0033bb;
-    font-size: 14px;
-    border-bottom: 2px solid #0033bb;
-    display: inline-block;
-    margin-bottom: 10px;
+.panel-header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+    padding-bottom:16px;
+    border-bottom:1px solid var(--line);
 }
 
-.pdf-footer-info p { font-size: 12px; color: #555; }
+.panel-header h2{
+    font-size:18px;
+    font-weight:800;
+    color:var(--primary);
+    letter-spacing:-.3px;
+}
+
+.panel-header svg{
+    width:21px;
+    height:21px;
+    color:var(--accent);
+}
+
+.hint{
+    margin:-6px 0 22px;
+    color:var(--text-soft);
+    font-size:13px;
+    line-height:1.5;
+}
+
+/* =======================================
+   FORMS
+======================================= */
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+}
+
+@media(max-width:650px){
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .input-group.full{
+        grid-column:span 1 !important;
+    }
+}
+
+.input-group{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.input-group.full{
+    grid-column:span 2;
+}
+
+.input-group label{
+    font-size:13px;
+    font-weight:700;
+    color:var(--primary);
+}
+
+input,
+textarea,
+select{
+    width:100%;
+    border:1px solid var(--line);
+    background:#ffffff;
+    border-radius:14px;
+    padding:14px 16px;
+    font-size:14px;
+    color:var(--primary);
+    outline:none;
+    transition:.2s ease;
+}
+
+textarea{
+    resize:vertical;
+    min-height:120px;
+}
+
+input::placeholder,
+textarea::placeholder{
+    color:#94a3b8;
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+    border-color:var(--accent);
+    box-shadow:0 0 0 5px rgba(37,99,235,.08);
+    transform:translateY(-1px);
+}
+
+/* =======================================
+   DIVIDER
+======================================= */
+
+.divider{
+    height:1px;
+    background:linear-gradient(to right,transparent,var(--line),transparent);
+    margin:30px 0;
+}
+
+/* =======================================
+   ITENS
+======================================= */
+
+#itemsContainer{
+    margin-bottom:16px;
+}
+
+.item-row{
+    display:grid;
+    grid-template-columns:2fr 180px 54px;
+    gap:14px;
+    align-items:center;
+
+    background:linear-gradient(135deg,#ffffff,#f8fafc);
+    border:1px solid var(--line);
+    border-radius:16px;
+
+    padding:14px;
+    margin-bottom:14px;
+
+    transition:.25s ease;
+}
+
+.item-row:hover{
+    border-color:#cbd5e1;
+    transform:translateY(-2px);
+    box-shadow:0 12px 22px rgba(15,23,42,.06);
+}
+
+@media(max-width:700px){
+    .item-row{
+        grid-template-columns:1fr;
+    }
+}
+
+.item-row .input-group{
+    gap:0;
+}
+
+/* =======================================
+   BUTTONS
+======================================= */
+
+.btn{
+    border:none;
+    cursor:pointer;
+    border-radius:14px;
+    padding:14px 20px;
+    font-size:14px;
+    font-weight:800;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    transition:.25s ease;
+}
+
+.btn svg{
+    width:18px;
+    height:18px;
+}
+
+.btn-secondary{
+    width:100%;
+    background:#fff;
+    color:var(--primary);
+    border:1px solid var(--line);
+}
+
+.btn-secondary:hover{
+    transform:translateY(-2px);
+    border-color:#cbd5e1;
+    box-shadow:0 10px 18px rgba(15,23,42,.05);
+}
+
+.btn-primary{
+    width:100%;
+    margin-top:28px;
+    color:#fff;
+    background:
+        linear-gradient(135deg,var(--accent),#3b82f6);
+    box-shadow:
+        0 14px 25px rgba(37,99,235,.28);
+}
+
+.btn-primary:hover{
+    transform:translateY(-3px);
+    background:
+        linear-gradient(135deg,var(--accent-2),#2563eb);
+}
+
+.btn-primary:disabled{
+    opacity:.7;
+    cursor:not-allowed;
+    transform:none;
+}
+
+.btn-remove{
+    border:none;
+    border-radius:14px;
+    height:48px;
+    width:48px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#fff1f2;
+    color:var(--danger);
+    cursor:pointer;
+    transition:.2s ease;
+}
+
+.btn-remove:hover{
+    background:#fee2e2;
+    transform:scale(1.05);
+}
+
+/* =======================================
+   TOTAL
+======================================= */
+
+.total-box{
+    margin-top:22px;
+    padding:22px;
+    border-radius:18px;
+    background:
+        linear-gradient(135deg,#0f172a,#1e293b);
+    color:#fff;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+
+    box-shadow:
+        0 18px 28px rgba(15,23,42,.22);
+}
+
+.total-box span{
+    font-size:14px;
+    opacity:.85;
+}
+
+.total-box h2{
+    font-size:32px;
+    color:#34d399;
+    letter-spacing:-1px;
+}
+
+/* =======================================
+   PDF TEMPLATE
+======================================= */
+
+.pdf-container{
+    width:210mm;
+    min-height:297mm;
+    background:#fff;
+    color:#0f172a;
+    position:relative;
+    overflow:hidden;
+    padding:20mm;
+    font-family:'Plus Jakarta Sans',sans-serif;
+}
+
+/* DECOR */
+
+.pdf-shapes-top{
+    position:absolute;
+    top:0;
+    right:0;
+    width:170px;
+    height:110px;
+    background:
+        linear-gradient(225deg,#1d4ed8 0%,#2563eb 48%,transparent 48%);
+}
+
+.pdf-shapes-bottom{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:220px;
+    height:160px;
+    background:
+        linear-gradient(45deg,#1d4ed8 0%,#2563eb 38%,#60a5fa 38%,#60a5fa 52%,transparent 52%);
+}
+
+/* HEADER PDF */
+
+.pdf-header-new{
+    display:flex;
+    justify-content:space-between;
+    gap:30px;
+    margin-bottom:45px;
+}
+
+.company-name-pdf{
+    font-size:28px;
+    font-weight:800;
+    color:#1d4ed8;
+    letter-spacing:-1px;
+    margin-bottom:24px;
+    text-transform:uppercase;
+}
+
+.title-blue{
+    font-size:30px;
+    color:#1d4ed8;
+    font-weight:800;
+    margin-bottom:8px;
+}
+
+.quote-info p{
+    font-size:13px;
+    color:#475569;
+}
+
+.header-right{
+    text-align:right;
+    font-size:13px;
+    line-height:1.9;
+    color:#334155;
+}
+
+/* CLIENTE */
+
+.pdf-client-section{
+    margin-bottom:28px;
+}
+
+.pdf-client-section h3{
+    color:#1d4ed8;
+    font-size:15px;
+    margin-bottom:6px;
+}
+
+.client-highlight{
+    font-size:20px;
+    font-weight:700;
+    color:#0f172a;
+}
+
+#pdf-client-details{
+    font-size:12px;
+    color:#64748b;
+    margin-top:4px;
+}
+
+/* TABLE */
+
+.pdf-table-new{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:12px;
+}
+
+.pdf-table-new th{
+    padding:12px 10px;
+    font-size:13px;
+    color:#1d4ed8;
+    border-bottom:3px solid #1d4ed8;
+    text-align:left;
+}
+
+.pdf-table-new td{
+    padding:14px 10px;
+    border-bottom:1px solid #e2e8f0;
+    font-size:13px;
+    vertical-align:top;
+}
+
+.text-right{
+    text-align:right;
+}
+
+/* TOTAL PDF */
+
+.pdf-total-row{
+    margin-top:24px;
+    display:flex;
+    justify-content:flex-end;
+}
+
+.total-label{
+    background:#1d4ed8;
+    color:#fff;
+    padding:12px 26px;
+    font-size:20px;
+    font-weight:800;
+    border-radius:10px;
+}
+
+/* FOOTER PDF */
+
+.pdf-footer-info{
+    margin-top:50px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:34px;
+}
+
+.pdf-footer-info h4{
+    font-size:13px;
+    color:#1d4ed8;
+    margin-bottom:8px;
+    padding-bottom:6px;
+    border-bottom:2px solid #1d4ed8;
+}
+
+.pdf-footer-info p{
+    font-size:12px;
+    line-height:1.7;
+    color:#475569;
+}
+
+/* =======================================
+   SCROLLBAR
+======================================= */
+
+::-webkit-scrollbar{
+    width:10px;
+}
+
+::-webkit-scrollbar-track{
+    background:#e2e8f0;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#94a3b8;
+    border-radius:20px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+    background:#64748b;
+}
