@@ -3,263 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OrçaPro | Gestão Inteligente de Orçamentos</title>
+    <title>OrçaPro | Gerador Profissional</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-</head>
+    <script src="https://unpkg.com/lucide@latest"></script> </head>
 <body>
 
-    <section id="login-page" class="auth-container">
-        <div class="auth-card fade-in">
-            <div class="auth-header">
-                <h1 class="logo-text">Orça<span>Pro</span></h1>
-                <p>Acesse sua conta para gerenciar orçamentos.</p>
-            </div>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label>E-mail</label>
-                    <input type="email" id="loginEmail" placeholder="nome@empresa.com" required>
-                </div>
-                <div class="form-group">
-                    <label>Senha</label>
-                    <input type="password" id="loginPass" placeholder="••••••••" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Entrar na plataforma</button>
-            </form>
-            <button class="btn btn-outline" onclick="showPage('register-page')">Criar nova conta</button>
-        </div>
-    </section>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="logo">Orça<span>Pro</span></div>
+            <p>Gerador de Propostas Comerciais</p>
+        </header>
 
-    <section id="register-page" class="auth-container hidden">
-        <div class="auth-card fade-in">
-            <div class="auth-header">
-                <h1 class="logo-text">Orça<span>Pro</span></h1>
-                <p>Comece sua jornada profissional hoje.</p>
-            </div>
-            <form id="registerForm">
-                <div class="form-group">
-                    <label>Nome Completo</label>
-                    <input type="text" id="regName" placeholder="Ex: João Silva" required>
+        <main class="dashboard-grid">
+            
+            <section class="panel">
+                <div class="panel-header">
+                    <i data-lucide="building"></i>
+                    <h2>Sua Empresa (Cabeçalho)</h2>
                 </div>
-                <div class="form-group">
-                    <label>E-mail Corporativo</label>
-                    <input type="email" id="regEmail" placeholder="contato@empresa.com" required>
-                </div>
-                <div class="form-group">
-                    <label>Senha</label>
-                    <input type="password" id="regPass" placeholder="Mínimo 6 caracteres" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Finalizar Cadastro</button>
-            </form>
-            <div class="auth-footer">
-                Já possui conta? <a href="#" onclick="showPage('login-page')">Fazer Login</a>
-            </div>
-        </div>
-    </section>
-
-    <section id="dashboard-page" class="hidden">
-        <aside>
-            <h1 class="logo-text" style="color: white; margin-bottom: 10px;">Orça<span>Pro</span></h1>
-            <nav>
-                <ul class="nav-menu">
-                    <li class="nav-item active">📊 Dashboard</li>
-                    <li class="nav-item" onclick="scrollToForm()">📝 Criar Orçamento</li>
-                    <li class="nav-item" style="margin-top: 50px; color: #f87171;" onclick="location.reload()">🚪 Sair</li>
-                </ul>
-            </nav>
-        </aside>
-
-        <main class="fade-in">
-            <header class="dash-header">
-                <div>
-                    <h2>Bem-vindo, <span id="user-display">Usuário</span></h2>
-                    <p style="color: var(--text-muted); font-size: 14px;">Dados salvos em tempo real no Supabase.</p>
-                </div>
-                <button class="btn btn-primary" style="width: auto; padding: 10px 24px;" onclick="scrollToForm()">+ Novo Orçamento</button>
-            </header>
-
-            <div class="card" id="form-section">
-                <h3 style="margin-bottom: 20px;">Gerar Novo Orçamento</h3>
-                <form id="budgetForm" class="budget-form">
-                    <div class="form-group">
-                        <label>Cliente</label>
-                        <input type="text" id="clientName" placeholder="Nome do cliente" required>
+                <p class="hint">Estes dados aparecerão no cabeçalho e rodapé do PDF. (Salvos automaticamente)</p>
+                
+                <form id="companyForm" class="form-grid">
+                    <div class="input-group full">
+                        <label>Nome da sua Empresa</label>
+                        <input type="text" id="myCompany" placeholder="Ex: Agência XYZ" required>
                     </div>
-                    <div class="form-group">
-                        <label>Data</label>
-                        <input type="date" id="budgetDate" required>
+                    <div class="input-group">
+                        <label>Telefone / WhatsApp</label>
+                        <input type="text" id="myPhone" placeholder="(00) 00000-0000">
                     </div>
-                    <div class="form-group">
-                        <label>Valor Total (R$)</label>
-                        <input type="number" id="budgetAmount" placeholder="0,00" step="0.01" required>
+                    <div class="input-group">
+                        <label>E-mail Corporativo</label>
+                        <input type="email" id="myEmail" placeholder="contato@suaempresa.com">
                     </div>
-                    <div class="form-group">
-                        <label>Categoria</label>
-                        <input type="text" id="serviceCat" placeholder="Ex: Web Design">
-                    </div>
-                    <div class="form-group full-width">
-                        <label>Descrição Detalhada</label>
-                        <input type="text" id="serviceDesc" placeholder="O que será feito?" required>
-                    </div>
-                    <div class="full-width">
-                        <button type="submit" class="btn btn-primary" id="btnSave">Salvar e Gerar PDF</button>
+                    <div class="input-group full">
+                        <label>Endereço ou CNPJ (Opcional)</label>
+                        <input type="text" id="myDoc" placeholder="CNPJ: 00.000.000/0001-00">
                     </div>
                 </form>
-            </div>
+            </section>
 
-            <div class="card">
-                <h3 style="margin-bottom: 20px;">Meus Orçamentos</h3>
-                <div class="table-container">
-                    <table id="budgetTable">
-                        <thead>
-                            <tr>
-                                <th>Cliente</th>
-                                <th>Serviço</th>
-                                <th>Valor</th>
-                                <th>Data</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+            <section class="panel">
+                <div class="panel-header">
+                    <i data-lucide="user"></i>
+                    <h2>Dados do Cliente & Serviço</h2>
                 </div>
-            </div>
-        </main>
-    </section>
+                
+                <form id="quoteForm">
+                    <div class="form-grid">
+                        <div class="input-group full">
+                            <label>Nome do Cliente ou Empresa</label>
+                            <input type="text" id="clientName" placeholder="Para quem é este orçamento?" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Data de Validade</label>
+                            <input type="date" id="validDate" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Número do Orçamento</label>
+                            <input type="text" id="quoteNumber" value="001" required>
+                        </div>
+                    </div>
 
-    <div id="pdf-template" style="display: none; padding: 40px; font-family: 'Inter', sans-serif; color: #1e293b;">
-        <div style="border-bottom: 2px solid #0a1f44; padding-bottom: 20px; margin-bottom: 20px; display: flex; justify-content: space-between;">
-            <h1>ORÇAPRO</h1>
-            <div style="text-align: right;">
-                <p>Data: <span id="pdf-date-now"></span></p>
-                <p>ID: #<span id="pdf-id"></span></p>
-            </div>
-        </div>
-        <h3>Proposta para: <span id="pdf-client-name"></span></h3>
-        <p><strong>Serviço:</strong> <span id="pdf-service-cat"></span></p>
-        <p><strong>Descrição:</strong> <span id="pdf-service-desc"></span></p>
-        <h2 style="color: #0a1f44;">Total: <span id="pdf-amount"></span></h2>
-        <div style="margin-top: 50px; font-size: 12px; color: #64748b; border-top: 1px solid #eee; pt: 10px;">
-            Documento gerado eletronicamente via OrçaPro.
-        </div>
+                    <div class="divider"></div>
+
+                    <div class="panel-header">
+                        <i data-lucide="list"></i>
+                        <h2>Itens do Orçamento</h2>
+                    </div>
+                    
+                    <div id="itemsContainer">
+                        </div>
+
+                    <button type="button" class="btn btn-secondary" onclick="addItem()">
+                        <i data-lucide="plus-circle"></i> Adicionar Novo Item
+                    </button>
+
+                    <div class="total-box">
+                        <span>Valor Total da Proposta:</span>
+                        <h2 id="grandTotal">R$ 0,00</h2>
+                    </div>
+
+                    <div class="input-group full" style="margin-top: 20px;">
+                        <label>Observações / Condições de Pagamento</label>
+                        <textarea id="obsText" rows="3" placeholder="Ex: Pagamento 50% no início e 50% na entrega. Validade de 15 dias."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary generate-btn">
+                        <i data-lucide="file-down"></i> Gerar e Baixar PDF Profissional
+                    </button>
+                </form>
+            </section>
+        </main>
     </div>
 
-    <script>
-        // --- 1. CONFIGURAÇÃO ---
-        const SUPABASE_URL = 'https://cynponjiqcszrzysuvlb.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5bnBvbmppcWNzenJ6eXN1dmxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NTQ0NzgsImV4cCI6MjA5MjUzMDQ3OH0.STHCtMSYZwn0wI10jyRZSqp1ZSdNtm76NITGtxJAeIQ';
-        
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <div id="pdf-template" class="pdf-container">
+        <header class="pdf-header">
+            <div>
+                <h1 id="pdf-my-company" class="brand">NOME DA EMPRESA</h1>
+                <p id="pdf-my-doc"></p>
+            </div>
+            <div class="text-right">
+                <h2>ORÇAMENTO</h2>
+                <p>Nº <strong id="pdf-number"></strong></p>
+                <p>Data: <span id="pdf-date"></span></p>
+            </div>
+        </header>
 
-        // --- 2. NAVEGAÇÃO ---
-        function showPage(pageId) {
-            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-            const target = document.getElementById(pageId);
-            if(target) {
-                target.classList.remove('hidden');
-            }
-            if(pageId === 'dashboard-page') fetchBudgets();
-        }
+        <div class="pdf-section">
+            <h3>Preparado para:</h3>
+            <p class="highlight" id="pdf-client-name"></p>
+        </div>
 
-        function scrollToForm() {
-            document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
-        }
+        <table class="pdf-table">
+            <thead>
+                <tr>
+                    <th>Descrição do Item/Serviço</th>
+                    <th class="text-right">Valor</th>
+                </tr>
+            </thead>
+            <tbody id="pdf-items-body">
+                </tbody>
+        </table>
 
-        // --- 3. LOGIN / CADASTRO ---
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            showPage('dashboard-page');
-        });
+        <div class="pdf-total-section">
+            <div class="pdf-total-box">
+                <p>TOTAL DA PROPOSTA</p>
+                <h2 id="pdf-grand-total"></h2>
+            </div>
+        </div>
 
-        document.getElementById('registerForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = document.getElementById('regName').value;
-            document.getElementById('user-display').innerText = name.split(' ')[0];
-            showPage('dashboard-page');
-        });
+        <div class="pdf-obs">
+            <h3>Termos e Condições</h3>
+            <p id="pdf-obs-text"></p>
+        </div>
 
-        // --- 4. DADOS (SUPABASE) ---
-        async function fetchBudgets() {
-            const { data, error } = await supabaseClient
-                .from('budgets')
-                .select('*')
-                .order('created_at', { ascending: false });
+        <footer class="pdf-footer">
+            <p><span id="pdf-my-phone"></span> | <span id="pdf-my-email"></span></p>
+            <p>Documento gerado profissionalmente.</p>
+        </footer>
+    </div>
 
-            if (error) {
-                console.error('Erro ao buscar dados:', error);
-                return;
-            }
-
-            const tableBody = document.querySelector('#budgetTable tbody');
-            tableBody.innerHTML = '';
-
-            data.forEach(item => {
-                const row = tableBody.insertRow();
-                row.innerHTML = `
-                    <td><strong>${item.client_name}</strong></td>
-                    <td>${item.service_desc}</td>
-                    <td>R$ ${parseFloat(item.amount).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
-                    <td>${new Date(item.budget_date).toLocaleDateString('pt-BR')}</td>
-                    <td><span class="status-badge" style="background:#dcfce7; color:#166534; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Salvo</span></td>
-                `;
-            });
-        }
-
-        // --- 5. SALVAR E GERAR PDF ---
-        document.getElementById('budgetForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('btnSave');
-            btn.innerText = "Salvando...";
-            btn.disabled = true;
-
-            const budgetData = {
-                client_name: document.getElementById('clientName').value,
-                budget_date: document.getElementById('budgetDate').value,
-                amount: parseFloat(document.getElementById('budgetAmount').value),
-                service_desc: document.getElementById('serviceDesc').value,
-                service_cat: document.getElementById('serviceCat').value || 'Geral'
-            };
-
-            const { error } = await supabaseClient.from('budgets').insert([budgetData]);
-
-            if (error) {
-                alert("Erro ao conectar com o banco. Verifique sua tabela 'budgets'.");
-                console.error(error);
-            } else {
-                generatePDF(budgetData);
-                this.reset();
-                fetchBudgets();
-            }
-
-            btn.innerText = "Salvar e Baixar PDF";
-            btn.disabled = false;
-        });
-
-        function generatePDF(data) {
-            const template = document.getElementById('pdf-template');
-            document.getElementById('pdf-client-name').innerText = data.client_name;
-            document.getElementById('pdf-service-cat').innerText = data.service_cat;
-            document.getElementById('pdf-service-desc').innerText = data.service_desc;
-            document.getElementById('pdf-amount').innerText = 'R$ ' + data.amount.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-            document.getElementById('pdf-date-now').innerText = new Date().toLocaleDateString('pt-BR');
-            document.getElementById('pdf-id').innerText = Math.floor(1000 + Math.random() * 9000);
-
-            template.style.display = 'block';
-            html2pdf().from(template).save().then(() => {
-                template.style.display = 'none';
-            });
-        }
-
-        // Tentar carregar dados se já estiver no dashboard
-        window.onload = () => {
-            // Se houver erro de rede, avisa no console
-            if (typeof supabase === 'undefined') {
-                console.error("SDK do Supabase não carregou!");
-            }
-        };
-    </script>
+    <script src="script.js"></script>
+    <script>lucide.createIcons();</script>
 </body>
 </html>
