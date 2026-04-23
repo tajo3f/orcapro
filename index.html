@@ -104,17 +104,60 @@
         </main>
     </div>
 
-    <div id="pdf-template" class="pdf-container">
-        <header class="pdf-header">
-            <div>
-                <h1 id="pdf-my-company" class="brand">NOME DA EMPRESA</h1>
-                <p id="pdf-my-doc"></p>
+<div id="pdf-template" class="pdf-container">
+    <div class="pdf-shapes-top"></div>
+    
+    <header class="pdf-header-new">
+        <div class="header-left">
+            <h1 id="pdf-my-company" class="company-name-pdf">NOME DA EMPRESA</h1>
+            <div class="quote-info">
+                <h2 class="title-blue">ORÇAMENTO #<span id="pdf-number"></span></h2>
+                <p><strong>Data:</strong> <span id="pdf-date"></span></p>
             </div>
-            <div class="text-right">
-                <h2>ORÇAMENTO</h2>
-                <p>Nº <strong id="pdf-number"></strong></p>
-                <p>Data: <span id="pdf-date"></span></p>
-            </div>
+        </div>
+        <div class="header-right">
+            <p><span id="pdf-my-phone"></span> <i data-lucide="phone"></i></p>
+            <p><span id="pdf-my-email"></span> <i data-lucide="mail"></i></p>
+            <p id="pdf-my-doc"></p>
+        </div>
+    </header>
+
+    <div class="pdf-client-section">
+        <h3>A/C:</h3>
+        <p class="client-highlight" id="pdf-client-name"></p>
+        <p id="pdf-client-details">Responsável pelo Orçamento</p>
+    </div>
+
+    <table class="pdf-table-new">
+        <thead>
+            <tr>
+                <th>SERVIÇO</th>
+                <th>DESCRIÇÃO</th>
+                <th class="text-right">VALOR</th>
+            </tr>
+        </thead>
+        <tbody id="pdf-items-body">
+            </tbody>
+    </table>
+
+    <div class="pdf-total-row">
+        <div class="total-label">TOTAL: <span id="pdf-grand-total"></span></div>
+    </div>
+
+    <div class="pdf-footer-info">
+        <div class="footer-block">
+            <h4>FORMA DE PAGAMENTO</h4>
+            <p id="pdf-payment-info">Pix, Transferência ou Cartão de Crédito.</p>
+        </div>
+        <div class="footer-block">
+            <h4>TERMOS E CONDIÇÕES</h4>
+            <p id="pdf-obs-text"></p>
+        </div>
+    </div>
+
+    <div class="pdf-shapes-bottom"></div>
+</div>
+    
         </header>
 
         <div class="pdf-section">
